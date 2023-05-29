@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  edeals.catalog.api:
+    image: ${DOCKER_REGISTRY-}edealscatalogapi
+    build:
+      context: .
+      dockerfile: src/EDeals.Catalog/Dockerfile
