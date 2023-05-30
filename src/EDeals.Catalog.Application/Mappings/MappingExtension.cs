@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EDeals.Catalog.Infrastructure.Mappings
+namespace EDeals.Catalog.Application.Mappings
 {
     public static class MappingExtension
     {

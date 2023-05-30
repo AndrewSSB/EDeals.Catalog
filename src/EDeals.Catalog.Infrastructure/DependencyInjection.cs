@@ -3,9 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using EDeals.Catalog.Infrastructure.Settings;
-using EDeals.Catalog.Infrastructure.Mappings;
 using EDeals.Catalog.Infrastructure.Shared.DateTimeHelpers;
 using EDeals.Catalog.Infrastructure.Shared.ExecutionContext;
+using EDeals.Catalog.Application.Interfaces;
+using EDeals.Catalog.Infrastructure.Repositories;
 
 namespace EDeals.Catalog.Infrastructure
 {
@@ -30,14 +31,16 @@ namespace EDeals.Catalog.Infrastructure
                     options => options.EnableRetryOnFailure()
                 )
             );
+
+            //services.AddScoped<IAppDbContext, AppDbContext>();
         }
 
         public static IServiceCollection AddInfrastructureMethods(this IServiceCollection services)
         {
             // Services
             services.AddSingleton<IDateTimeHelper, DateTimeHelper>();
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddHttpContextAccessor().AddScoped<ICustomExecutionContext, CustomExecutionContext>();
-            services.AddMappings();
 
             return services;
         }

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EDeals.Catalog.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230530074134_AddedProductTablesAndRelations")]
-    partial class AddedProductTablesAndRelations
+    [Migration("20230530141119_CreatedCatalogDatabase")]
+    partial class CreatedCatalogDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -121,9 +121,6 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                     b.Property<Guid>("ProductId")
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid>("ProductId1")
-                        .HasColumnType("char(36)");
-
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
@@ -131,8 +128,6 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("ProductId1");
 
                     b.ToTable("Images");
                 });
@@ -162,9 +157,6 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int>("MainImageId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("Price")
                         .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
@@ -184,6 +176,7 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                         .HasColumnType("varchar(100)");
 
                     b.Property<Guid>("StockKeepingUnit")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
                     b.Property<string>("Title")
@@ -198,9 +191,6 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BrandId")
-                        .IsUnique();
-
-                    b.HasIndex("MainImageId")
                         .IsUnique();
 
                     b.HasIndex("ProductCategoryId");
@@ -303,6 +293,243 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                     b.ToTable("Sellers");
                 });
 
+            modelBuilder.Entity("EDeals.Catalog.Domain.Entities.Shopping.CartItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ShoppingSessionId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId")
+                        .IsUnique();
+
+                    b.HasIndex("ShoppingSessionId");
+
+                    b.ToTable("CartItems");
+                });
+
+            modelBuilder.Entity("EDeals.Catalog.Domain.Entities.Shopping.ShoppingSession", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<decimal>("Total")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ShoppingSessions");
+                });
+
+            modelBuilder.Entity("EDeals.Catalog.Domain.Entities.TransactionDetails.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("PaymentType")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("EDeals.Catalog.Domain.Entities.TransactionDetails.OrderedItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<uint>("Quantity")
+                        .HasColumnType("int unsigned");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderedItems");
+                });
+
+            modelBuilder.Entity("EDeals.Catalog.Domain.Entities.UserAddress", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
+
+                    b.Property<string>("AddressAditionally")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)");
+
+                    b.Property<string>("Region")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("UserInfoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserInfoId");
+
+                    b.ToTable("UserAddresses");
+                });
+
+            modelBuilder.Entity("EDeals.Catalog.Domain.Entities.UserInfo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("varchar(80)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("varchar(15)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserInfos");
+                });
+
             modelBuilder.Entity("EDeals.Catalog.Domain.Entities.ItemEntities.Discount", b =>
                 {
                     b.HasOne("EDeals.Catalog.Domain.Entities.ItemEntities.Product", "Product")
@@ -314,15 +541,9 @@ namespace EDeals.Catalog.Infrastructure.Migrations
 
             modelBuilder.Entity("EDeals.Catalog.Domain.Entities.ItemEntities.Image", b =>
                 {
-                    b.HasOne("EDeals.Catalog.Domain.Entities.ItemEntities.Product", null)
+                    b.HasOne("EDeals.Catalog.Domain.Entities.ItemEntities.Product", "Product")
                         .WithMany("Images")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EDeals.Catalog.Domain.Entities.ItemEntities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -334,12 +555,6 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                     b.HasOne("EDeals.Catalog.Domain.Entities.ItemEntities.Brand", "Brand")
                         .WithOne("Product")
                         .HasForeignKey("EDeals.Catalog.Domain.Entities.ItemEntities.Product", "BrandId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EDeals.Catalog.Domain.Entities.ItemEntities.Image", "MainImage")
-                        .WithOne()
-                        .HasForeignKey("EDeals.Catalog.Domain.Entities.ItemEntities.Product", "MainImageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -363,8 +578,6 @@ namespace EDeals.Catalog.Infrastructure.Migrations
 
                     b.Navigation("Brand");
 
-                    b.Navigation("MainImage");
-
                     b.Navigation("ProductCategory");
 
                     b.Navigation("ProductInventory");
@@ -379,6 +592,52 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                         .HasForeignKey("ParentCategoryId");
 
                     b.Navigation("ParentCategory");
+                });
+
+            modelBuilder.Entity("EDeals.Catalog.Domain.Entities.Shopping.CartItem", b =>
+                {
+                    b.HasOne("EDeals.Catalog.Domain.Entities.ItemEntities.Product", "Product")
+                        .WithOne()
+                        .HasForeignKey("EDeals.Catalog.Domain.Entities.Shopping.CartItem", "ProductId")
+                        .IsRequired();
+
+                    b.HasOne("EDeals.Catalog.Domain.Entities.Shopping.ShoppingSession", "ShoppingSession")
+                        .WithMany("CartItems")
+                        .HasForeignKey("ShoppingSessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("ShoppingSession");
+                });
+
+            modelBuilder.Entity("EDeals.Catalog.Domain.Entities.TransactionDetails.OrderedItem", b =>
+                {
+                    b.HasOne("EDeals.Catalog.Domain.Entities.TransactionDetails.Order", "Order")
+                        .WithMany("OrderedItems")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EDeals.Catalog.Domain.Entities.ItemEntities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("EDeals.Catalog.Domain.Entities.UserAddress", b =>
+                {
+                    b.HasOne("EDeals.Catalog.Domain.Entities.UserInfo", "UserInfo")
+                        .WithMany("UsersAddresses")
+                        .HasForeignKey("UserInfoId");
+
+                    b.Navigation("UserInfo");
                 });
 
             modelBuilder.Entity("EDeals.Catalog.Domain.Entities.ItemEntities.Brand", b =>
@@ -411,6 +670,21 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                 {
                     b.Navigation("Product")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("EDeals.Catalog.Domain.Entities.Shopping.ShoppingSession", b =>
+                {
+                    b.Navigation("CartItems");
+                });
+
+            modelBuilder.Entity("EDeals.Catalog.Domain.Entities.TransactionDetails.Order", b =>
+                {
+                    b.Navigation("OrderedItems");
+                });
+
+            modelBuilder.Entity("EDeals.Catalog.Domain.Entities.UserInfo", b =>
+                {
+                    b.Navigation("UsersAddresses");
                 });
 #pragma warning restore 612, 618
         }

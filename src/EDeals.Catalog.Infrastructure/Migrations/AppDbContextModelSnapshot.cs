@@ -119,9 +119,6 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                     b.Property<Guid>("ProductId")
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid>("ProductId1")
-                        .HasColumnType("char(36)");
-
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
@@ -129,8 +126,6 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("ProductId1");
 
                     b.ToTable("Images");
                 });
@@ -160,9 +155,6 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int>("MainImageId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("Price")
                         .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
@@ -182,6 +174,7 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                         .HasColumnType("varchar(100)");
 
                     b.Property<Guid>("StockKeepingUnit")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
                     b.Property<string>("Title")
@@ -196,9 +189,6 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BrandId")
-                        .IsUnique();
-
-                    b.HasIndex("MainImageId")
                         .IsUnique();
 
                     b.HasIndex("ProductCategoryId");
@@ -549,15 +539,9 @@ namespace EDeals.Catalog.Infrastructure.Migrations
 
             modelBuilder.Entity("EDeals.Catalog.Domain.Entities.ItemEntities.Image", b =>
                 {
-                    b.HasOne("EDeals.Catalog.Domain.Entities.ItemEntities.Product", null)
+                    b.HasOne("EDeals.Catalog.Domain.Entities.ItemEntities.Product", "Product")
                         .WithMany("Images")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EDeals.Catalog.Domain.Entities.ItemEntities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -569,12 +553,6 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                     b.HasOne("EDeals.Catalog.Domain.Entities.ItemEntities.Brand", "Brand")
                         .WithOne("Product")
                         .HasForeignKey("EDeals.Catalog.Domain.Entities.ItemEntities.Product", "BrandId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EDeals.Catalog.Domain.Entities.ItemEntities.Image", "MainImage")
-                        .WithOne()
-                        .HasForeignKey("EDeals.Catalog.Domain.Entities.ItemEntities.Product", "MainImageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -597,8 +575,6 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Brand");
-
-                    b.Navigation("MainImage");
 
                     b.Navigation("ProductCategory");
 

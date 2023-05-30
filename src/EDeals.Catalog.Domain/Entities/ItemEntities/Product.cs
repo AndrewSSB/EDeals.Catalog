@@ -1,4 +1,5 @@
 ﻿using EDeals.Catalog.Domain.Common;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EDeals.Catalog.Domain.Entities.ItemEntities
 {
@@ -7,13 +8,11 @@ namespace EDeals.Catalog.Domain.Entities.ItemEntities
         public string Title { get; set; }
         public string Description { get; set; }
         public string ShortDescription { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid StockKeepingUnit { get; set; }
         public decimal Price { get; set; }
         public string Color { get; set; }
         
-        public int MainImageId { get; set; }
-        public virtual Image MainImage { get; set; }
-
         public int ProductCategoryId { get; set; }
         public virtual ProductCategory ProductCategory { get; set; }
 

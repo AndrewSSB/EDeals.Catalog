@@ -37,17 +37,13 @@ namespace EDeals.Catalog.Infrastructure.EntityConfiguration
 
 
             // Config relations
-            builder
-                .HasOne(i => i.MainImage)
-                .WithOne()
-                .HasForeignKey<Product>(p => p.MainImageId)
-                .IsRequired();
 
             builder
                 .HasMany(p => p.Images)
-                .WithOne()
+                .WithOne(i => i.Product)
                 .HasForeignKey(i => i.ProductId)
-                .IsRequired();
+                .IsRequired()
+                .HasPrincipalKey(p => p.Id);
 
             builder
                 .HasOne(pi => pi.ProductInventory)
