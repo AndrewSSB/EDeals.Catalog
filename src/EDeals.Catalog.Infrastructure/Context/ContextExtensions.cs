@@ -1,5 +1,6 @@
 ﻿using EDeals.Catalog.Domain.Common;
 using EDeals.Catalog.Domain.Common.GenericResponses.ServiceResponse;
+using EDeals.Catalog.Infrastructure.EntityConfiguration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
@@ -10,7 +11,16 @@ namespace EDeals.Catalog.Infrastructure.Context
     {
         public static void ApplyEntityConfigurations(this ModelBuilder modelBuilder)
         {
-            //modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductCategoryConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductConfiguration());
+            modelBuilder.ApplyConfiguration(new DiscountConfiguration());
+            modelBuilder.ApplyConfiguration(new BrandConfiguration());
+            modelBuilder.ApplyConfiguration(new SellerConfiguration());
+            modelBuilder.ApplyConfiguration(new ImageConfiguration());
+            modelBuilder.ApplyConfiguration(new UserAddressConfiguration());
+            modelBuilder.ApplyConfiguration(new UserInfoConfiguration());
+            modelBuilder.ApplyConfiguration(new ShoppingSessionConfiguration());
+            modelBuilder.ApplyConfiguration(new CartItemConfiguration());
         }
 
         public static void EnableSoftDeleteCascade(this ModelBuilder modelBuilder)

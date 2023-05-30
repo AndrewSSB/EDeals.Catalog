@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EDeals.Catalog.Infrastructure.EntityConfiguration.BaseConfiguration
 {
-    internal abstract class BaseEntityConfiguration<TEntity> : IEntityTypeConfiguration<TEntity>
-        where TEntity : BaseEntity<Guid>
+    public abstract class BaseEntityConfiguration<TEntity, TKeyId> : IEntityTypeConfiguration<TEntity>
+        where TEntity : BaseEntity<TKeyId>
     {
         public virtual void Configure(EntityTypeBuilder<TEntity> builder)
         {
