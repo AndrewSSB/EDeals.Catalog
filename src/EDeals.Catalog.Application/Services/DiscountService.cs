@@ -36,6 +36,22 @@ namespace EDeals.Catalog.Application.Services
             return Ok();
         }
 
+        public async Task<ResultResponse> ActivateOrDezactivateDiscount(ActivateOrDezactivateDiscountModel model)
+        {
+            var discount = await _discountRepository.GetByIdAsync(model.DiscountId);
+
+            if (discount == null)
+            {
+                return BadRequest<DiscountResponse>(new ResponseError(ErrorCodes.InternalServer, ResponseErrorSeverity.Error, "Discount does not exists"));
+            }
+
+            discount.Active = model.IsActive;
+
+            await _discountRepository.UpdateAsync(discount);
+
+            return Ok();
+        }
+
         public async Task<ResultResponse> DeleteDiscount(int id)
         {
             var discount = await _discountRepository.GetByIdAsync(id);
