@@ -1,18 +1,23 @@
 ﻿using EDeals.Catalog.Application.Interfaces;
+using EDeals.Catalog.Application.Models.CartItemModels;
 using EDeals.Catalog.Application.Models.ShoppingSessionModels;
+using EDeals.Catalog.Domain.Common.ErrorMessages;
+using EDeals.Catalog.Domain.Common.GenericResponses.BaseResponses;
 using EDeals.Catalog.Domain.Common.GenericResponses.ServiceResponse;
 using EDeals.Catalog.Domain.Entities.ItemEntities;
+using EDeals.Catalog.Domain.Entities.Shopping;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EDeals.Catalog.Application.Services
 {
-    public class ShoppingSessionService : IShoppingSessionService
+    public class ShoppingSessionService : Result, IShoppingSessionService
     {
-        private readonly IGenericRepository<Seller> _sellerRepository;
+        private readonly IGenericRepository<ShoppingSession> _shoppingRepository;
         private readonly ICustomExecutionContext _executionContext;
 
-        public ShoppingSessionService(IGenericRepository<Seller> sellerRepository, ICustomExecutionContext executionContext)
+        public ShoppingSessionService(IGenericRepository<ShoppingSession> shoppingRepository, ICustomExecutionContext executionContext)
         {
-            _sellerRepository = sellerRepository;
+            _shoppingRepository = shoppingRepository;
             _executionContext = executionContext;
         }
 
@@ -21,14 +26,41 @@ namespace EDeals.Catalog.Application.Services
             throw new NotImplementedException();
         }
 
-        public Task<ResultResponse> DeleteShoppingSession(int id)
+        public async Task<ResultResponse> DeleteShoppingSession(int id)
         {
-            throw new NotImplementedException();
+            var shoppingSession = await _shoppingRepository.GetByIdAsync(id);
+            
+            if (shoppingSession != null)
+            {
+                await _shoppingRepository.DeleteAsync<int>(shoppingSession);
+            }
+
+            return Ok();
         }
 
-        public Task<ResultResponse<ShoppingSessionResponse>> GetShoppingSession(int id)
+        public async Task<ResultResponse<ShoppingSessionResponse>> GetShoppingSession(int id)
         {
-            throw new NotImplementedException();
+            var shoppingSession = await _shoppingRepository
+                .GetByIdAsync(id);
+
+            if (shoppingSession == null)
+            {
+                return BadRequest<ShoppingSessionResponse>(new ResponseError(ErrorCodes.InternalServer, ResponseErrorSeverity.Error, "Shopping session does not exists"));
+            }
+
+            return Ok(new ShoppingSessionResponse
+            {
+                Total = shoppingSession.Total,
+                CartItems = shoppingSession.CartItems.Select(x => new CartItemResponse
+                {
+                    CartItemId = x.Id,
+                    ProductId = x.ProductId,
+                    ProductName = x.Product.Name,
+                    ShoppingSessionId = x.ShoppingSessionId,
+                    ProductPrice = x.Product.Price,
+                    Quantity = x.Quantity
+                }).ToList()
+            });
         }
 
         public Task<ResultResponse> UpdateShoppingSession(UpdateShoppingSessionModel model)

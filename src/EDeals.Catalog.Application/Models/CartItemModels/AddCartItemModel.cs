@@ -2,5 +2,8 @@
 {
     public class AddCartItemModel
     {
+        public int Quantity { get; set; }
+
+        public Guid ProductId { get; set; }
     }
 }

@@ -1,46 +1,156 @@
 ﻿using EDeals.Catalog.Application.Interfaces;
 using EDeals.Catalog.Application.Models.CartItemModels;
+using EDeals.Catalog.Application.Models.DiscountModels;
+using EDeals.Catalog.Application.Models.ProductModels;
 using EDeals.Catalog.Application.Pagination.Filters;
 using EDeals.Catalog.Application.Pagination.Helpers;
+using EDeals.Catalog.Domain.Common.ErrorMessages;
+using EDeals.Catalog.Domain.Common.GenericResponses.BaseResponses;
 using EDeals.Catalog.Domain.Common.GenericResponses.ServiceResponse;
 using EDeals.Catalog.Domain.Entities.ItemEntities;
+using EDeals.Catalog.Domain.Entities.Shopping;
+using Microsoft.EntityFrameworkCore;
 
 namespace EDeals.Catalog.Application.Services
 {
-    public class CartItemService : ICartItemService
+    public class CartItemService : Result, ICartItemService
     {
-        private readonly IGenericRepository<Seller> _sellerRepository;
+        private readonly IGenericRepository<CartItem> _cartRepository;
+        private readonly IGenericRepository<ShoppingSession> _shoppingRepository;
+        private readonly IGenericRepository<Product> _productRepository;
         private readonly ICustomExecutionContext _executionContext;
 
-        public CartItemService(IGenericRepository<Seller> sellerRepository, ICustomExecutionContext executionContext)
+        public CartItemService(IGenericRepository<CartItem> cartRepository,
+            ICustomExecutionContext executionContext,
+            IGenericRepository<ShoppingSession> shoppingRepository,
+            IGenericRepository<Product> productRepository)
         {
-            _sellerRepository = sellerRepository;
+            _cartRepository = cartRepository;
             _executionContext = executionContext;
+            _shoppingRepository = shoppingRepository;
+            _productRepository = productRepository;
         }
 
-        public Task<ResultResponse> AddCartItem(AddCartItemModel model)
+        public async Task<ResultResponse> AddCartItem(AddCartItemModel model)
         {
-            throw new NotImplementedException();
+            var product = await _productRepository
+                .GetByIdAsync(model.ProductId);
+
+            if (product == null)
+            {
+                return BadRequest();
+            }
+
+            var cartItme = await _cartRepository.AddAsync(new CartItem
+            {
+                Product = product,
+                Quantity = model.Quantity,
+            });
+
+            var shoppingSession = await _shoppingRepository
+                .ListAllAsQueryable()
+                .Where(x => x.UserId == _executionContext.UserId)
+                .FirstOrDefaultAsync();
+
+            shoppingSession ??= await _shoppingRepository.AddAsync(new ShoppingSession
+            {
+                CartItems = new List<CartItem>
+                {
+                    cartItme
+                },
+                Total = cartItme.Product.Price * cartItme.Quantity,
+                UserId = _executionContext.UserId
+            });
+
+            shoppingSession.CartItems.Add(cartItme);
+            shoppingSession.Total += cartItme.Product.Price * cartItme.Quantity;
+
+            await _shoppingRepository.UpdateAsync(shoppingSession);
+
+            return Ok();
         }
 
-        public Task<ResultResponse> DeleteCartItem(int id)
+        public async Task<ResultResponse> DeleteCartItem(int id)
         {
-            throw new NotImplementedException();
+            var cartItem = await _cartRepository
+                .GetByIdAsync(id);
+
+            if (cartItem != null)
+            {
+                await _cartRepository.DeleteAsync<int>(cartItem);
+            }
+
+            return Ok();
         }
 
-        public Task<ResultResponse<CartItemResponse>> GetCartItem(int id)
+        public async Task<ResultResponse> UpdateCartItem(UpdateCartItemModel model)
         {
-            throw new NotImplementedException();
+            var cartItem = await _cartRepository
+                .GetByIdAsync(model.CartItemId);
+
+            if (cartItem != null)
+            {
+                if (model.Quantity <= 0)
+                {
+                    await _cartRepository.DeleteAsync<int>(cartItem);
+                    return Ok();
+                }
+                    
+                cartItem.Quantity = model.Quantity;
+                await _cartRepository.UpdateAsync(cartItem);
+
+            }
+
+            return Ok();
         }
 
-        public Task<ResultResponse<PagedResult<CartItemResponse>>> GetCartItems(CartItemsFilters filters)
+        public async Task<ResultResponse<PagedResult<CartItemResponse>>> GetCartItems(CartItemsFilters filters)
         {
-            throw new NotImplementedException();
+            filters.Start = filters.Start < 0 || filters.Start > filters.Limit ? 0 : filters.Start;
+            filters.Limit = filters.Limit <= 0 || filters.Limit > 60 ? 60 : filters.Limit;
+
+            var cartItems = _cartRepository
+                .ListAllAsQueryable()
+                .Include(x => x.Product)
+                .Include(x => x.ShoppingSession)
+                .Where(x => x.ShoppingSession.UserId == _executionContext.UserId)
+                .Select(x => new CartItemResponse
+                {
+                    CartItemId = x.Id,
+                    ProductId = x.ProductId,
+                    ProductName = x.Product.Name,
+                    ShoppingSessionId = x.ShoppingSessionId,
+                    ProductPrice = x.Product.Price,
+                    Quantity = x.Quantity
+                });
+
+            return Ok(await cartItems.MapToPagedResultAsync(filters));
         }
 
-        public Task<ResultResponse> UpdateCartItem(UpdateCartItemModel model)
+        public async Task<ResultResponse<CartItemResponse>> GetCartItem(int id)
         {
-            throw new NotImplementedException();
+            var cartItem = await _cartRepository
+                .ListAllAsQueryable()
+                .Include(x => x.Product)
+                .Include(x => x.ShoppingSession)
+                .Where(x => x.ShoppingSession.UserId == _executionContext.UserId && x.Id == id)
+                .Select(x => new CartItemResponse
+                {
+                    CartItemId = x.Id,
+                    ProductId = x.ProductId,
+                    ProductName = x.Product.Name,
+                    ShoppingSessionId = x.ShoppingSessionId,
+                    ProductPrice = x.Product.Price,
+                    Quantity = x.Quantity
+                })
+                .FirstOrDefaultAsync();
+            
+            if (cartItem == null)
+            {
+                return BadRequest<CartItemResponse>(new ResponseError(ErrorCodes.InternalServer, ResponseErrorSeverity.Error, "Item does not exists in the cart"));
+            } 
+           
+            return Ok(cartItem);
         }
     }
 }
