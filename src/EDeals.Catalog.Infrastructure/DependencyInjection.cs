@@ -7,6 +7,7 @@ using EDeals.Catalog.Infrastructure.Shared.DateTimeHelpers;
 using EDeals.Catalog.Infrastructure.Shared.ExecutionContext;
 using EDeals.Catalog.Application.Interfaces;
 using EDeals.Catalog.Infrastructure.Repositories;
+using EDeals.Catalog.Application.Settings;
 
 namespace EDeals.Catalog.Infrastructure
 {
@@ -45,10 +46,11 @@ namespace EDeals.Catalog.Infrastructure
             return services;
         }
 
-        public static IServiceCollection ConfigureSettings(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddInfraConfigureSettings(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<DbSettings>(configuration.GetSection(nameof(DbSettings)));
             services.Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
+            services.Configure<AzureSettings>(configuration.GetSection(nameof(AzureSettings)));
 
             return services;
         }

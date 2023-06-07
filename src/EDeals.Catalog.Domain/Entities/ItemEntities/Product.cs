@@ -5,6 +5,7 @@ namespace EDeals.Catalog.Domain.Entities.ItemEntities
 {
     public class Product : BaseEntity<Guid>
     {
+        public string Name { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string ShortDescription { get; set; }

@@ -5,6 +5,7 @@ namespace EDeals.Catalog.Application.Models.ProductModels
 {
     public class ProductResponse
     {
+        public string? Name { get; set; }
         public string? Title { get; set; }
         public string? Description { get; set; }
         public string? ShortDescription { get; set; }
@@ -21,6 +22,7 @@ namespace EDeals.Catalog.Application.Models.ProductModels
         public static Expression<Func<Product, ProductResponse>> Projection() =>
             product => new ProductResponse
             {
+                Name = product.Name,
                 Title = product.Title,
                 Description = product.Description,
                 ShortDescription = product.ShortDescription,

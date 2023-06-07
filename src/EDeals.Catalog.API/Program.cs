@@ -32,7 +32,8 @@ try
     builder.Services
         .AddApplicationMethods()
         .AddInfrastructureMethods()
-        .ConfigureSettings(builder.Configuration);
+        .AddApplicationConfigureSettings(builder.Configuration)
+        .AddInfraConfigureSettings(builder.Configuration);
 
     builder.Services.AddRouting(options => options.LowercaseUrls = true);
 

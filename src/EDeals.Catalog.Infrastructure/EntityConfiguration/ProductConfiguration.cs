@@ -34,6 +34,11 @@ namespace EDeals.Catalog.Infrastructure.EntityConfiguration
                 .Property(x => x.Color)
                 .HasMaxLength(50)
                 .IsRequired();
+            
+            builder
+                .Property(x => x.Name)
+                .HasMaxLength(50)
+                .IsRequired();
 
 
             // Config relations

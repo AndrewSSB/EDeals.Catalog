@@ -12,6 +12,6 @@ namespace EDeals.Catalog.Application.Interfaces
         Task AddRangeAsync(List<T> entities);
         Task UpdateAsync(T entity);
         Task UpdateRangeAsync(List<T> entities);
-        Task DeleteAsync(T entity);
+        Task DeleteAsync<TKey>(T entity);
     }
 }

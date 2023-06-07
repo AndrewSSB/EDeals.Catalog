@@ -1,4 +1,5 @@
 ﻿using EDeals.Catalog.Application.Interfaces;
+using EDeals.Catalog.Domain.Common;
 using EDeals.Catalog.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,10 +28,16 @@ namespace EDeals.Catalog.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public virtual async Task DeleteAsync(T entity)
+        public virtual async Task DeleteAsync<TKey>(T entity)
         {
-            _context.Set<T>().Remove(entity);
-            await _context.SaveChangesAsync();
+            if (typeof(BaseEntity<TKey>).IsAssignableFrom(typeof(T)))
+            {
+                if (entity is BaseEntity<TKey> baseEntity)
+                {
+                    baseEntity.IsDeleted = true;
+                    await _context.SaveChangesAsync();
+                }
+            }
         }
 
         public virtual async Task<T?> GetByIdAsync<TKey>(TKey id)
