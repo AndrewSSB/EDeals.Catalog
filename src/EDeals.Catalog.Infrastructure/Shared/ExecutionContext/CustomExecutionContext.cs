@@ -1,4 +1,5 @@
-﻿using EDeals.Catalog.Infrastructure.Settings;
+﻿using EDeals.Catalog.Application.Interfaces;
+using EDeals.Catalog.Infrastructure.Settings;
 using EDeals.Catalog.Infrastructure.Shared.TokenExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -7,12 +8,6 @@ using System.Security.Claims;
 
 namespace EDeals.Catalog.Infrastructure.Shared.ExecutionContext
 {
-    public interface ICustomExecutionContext
-    {
-        public Guid UserId { get; }
-        public DateTime ExpiresAt { get; }
-    }
-
     public class CustomExecutionContext : ICustomExecutionContext
     {
         private readonly JwtSettings _settings;

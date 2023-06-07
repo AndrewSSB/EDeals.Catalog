@@ -2,5 +2,6 @@
 {
     public class SellerResponse
     {
+        public string? SellerName { get; set; }
     }
 }

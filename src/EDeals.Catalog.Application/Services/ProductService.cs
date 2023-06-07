@@ -3,6 +3,8 @@ using EDeals.Catalog.Application.Interfaces;
 using EDeals.Catalog.Application.Models.ProductModels;
 using EDeals.Catalog.Application.Pagination.Filters;
 using EDeals.Catalog.Application.Pagination.Helpers;
+using EDeals.Catalog.Domain.Common.ErrorMessages;
+using EDeals.Catalog.Domain.Common.GenericResponses.BaseResponses;
 using EDeals.Catalog.Domain.Common.GenericResponses.ServiceResponse;
 using EDeals.Catalog.Domain.Entities.ItemEntities;
 using Microsoft.EntityFrameworkCore;
@@ -58,21 +60,21 @@ namespace EDeals.Catalog.Application.Services
 
             if (category == null)
             {
-                return Ok(model);
+                return BadRequest(new ResponseError(ErrorCodes.InternalServer, ResponseErrorSeverity.Error, "Invalid category"));
             }
 
             var seller = await _sellerRepository.GetByIdAsync(model.SellerId);
 
             if (seller == null)
             {
-                return Ok(model);
+                return BadRequest(new ResponseError(ErrorCodes.InternalServer, ResponseErrorSeverity.Error, "Invalid seller"));
             }
 
             var brand = await _brandRepository.GetByIdAsync(model.BrandId);
             
             if (brand == null)
             {
-                return Ok(model);
+                return BadRequest(new ResponseError(ErrorCodes.InternalServer, ResponseErrorSeverity.Error, "Invalid brand"));
             }
 
             var product = new Product

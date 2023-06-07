@@ -29,12 +29,12 @@ namespace EDeals.Catalog.API.Controllers
             ControllerExtension.Map(await _productService.AddProduct(model));
 
         [Produces("application/json")]
-        [HttpGet("product/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<ProductResponse>> GetProduct(Guid id) =>
             ControllerExtension.Map(await _productService.GetProduct(id));
 
         [Produces("application/json")]
-        [HttpGet("products")]
+        [HttpGet("all")]
         public async Task<ActionResult<PagedResult<ProductResponse>>> GetProducts(int start, int limit) =>
             ControllerExtension.Map(await _productService.GetProducts(new ProductsFilters { Start = start, Limit = limit}));
 

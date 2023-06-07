@@ -2,5 +2,6 @@
 {
     public class AddSellerModel
     {
+        public string SellerName { get; set; }
     }
 }

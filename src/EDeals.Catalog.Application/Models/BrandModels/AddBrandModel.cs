@@ -2,5 +2,6 @@
 {
     public class AddBrandModel
     {
+        public string BrandName { get; set; }
     }
 }

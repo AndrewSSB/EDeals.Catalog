@@ -2,5 +2,6 @@
 {
     public class BrandResponse
     {
+        public string? BrandName { get; set; }
     }
 }
