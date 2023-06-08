@@ -16,7 +16,7 @@ COPY . .
 WORKDIR "/src/src/EDeals.Catalog.API"
 RUN dotnet build "EDeals.Catalog.API.csproj" -c Release --no-restore
 
-RUN dotnet publish "EDeals.Catalog.API.csproj" -c Release -o --no-build --output /app
+RUN dotnet publish "EDeals.Catalog.API.csproj" -c Release --no-build --output /app
 
 FROM base AS final
 WORKDIR /app
