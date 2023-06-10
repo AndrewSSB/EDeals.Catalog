@@ -5,6 +5,7 @@ namespace EDeals.Catalog.Application.Models.DiscountModels
 {
     public class DiscountResponse
     {
+        public int DiscountId { get; set; }
         public string? DiscountCode { get; set; }
         public string? DiscountName { get; set; }
         public string? Description { get; set; }
@@ -14,6 +15,7 @@ namespace EDeals.Catalog.Application.Models.DiscountModels
         public static Expression<Func<Discount, DiscountResponse>> Projection() =>
             discount => new DiscountResponse
             {
+                DiscountId = discount.Id,
                 Description = discount.Description,
                 DiscountCode = discount.DiscountCode,
                 Active = discount.Active,

@@ -5,6 +5,8 @@ namespace EDeals.Catalog.Application.Models.CategoryModels
 {
     public class CategoryResponse
     {
+        public int CategoryId { get; set; }
+        
         public string? CategoryName { get; set; }
         public string? Description { get; set; }
 
@@ -16,6 +18,7 @@ namespace EDeals.Catalog.Application.Models.CategoryModels
         public static Expression<Func<ProductCategory, CategoryResponse>> Projection() =>
             category => new CategoryResponse
             {
+                CategoryId = category.Id,
                 CategoryName = category.CategoryName,
                 Description = category.Description,
                 ParentCategoryId = category.ParentCategory != null && !category.ParentCategory.IsDeleted ? category.ParentCategoryId : null,

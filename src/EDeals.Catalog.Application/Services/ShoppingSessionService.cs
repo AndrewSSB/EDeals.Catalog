@@ -50,6 +50,7 @@ namespace EDeals.Catalog.Application.Services
 
             return Ok(new ShoppingSessionResponse
             {
+                ShoppingSessionId = shoppingSession.Id,
                 Total = shoppingSession.Total,
                 CartItems = shoppingSession.CartItems.Select(x => new CartItemResponse
                 {

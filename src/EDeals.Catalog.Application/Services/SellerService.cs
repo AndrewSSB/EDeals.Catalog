@@ -55,6 +55,7 @@ namespace EDeals.Catalog.Application.Services
                 .Where(x => x.UserId == _executionContext.UserId && x.Id == id)
                 .Select(x => new SellerResponse
                 {
+                    SellerId = x.Id,
                     SellerName = x.SellerName 
                 })
                 .FirstOrDefaultAsync();

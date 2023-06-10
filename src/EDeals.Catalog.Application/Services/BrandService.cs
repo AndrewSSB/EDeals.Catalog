@@ -57,6 +57,7 @@ namespace EDeals.Catalog.Application.Services
 
             return Ok(new BrandResponse
             {
+                BrandId = brand.Id,
                 BrandName = brand.BrandName
             });
         }
