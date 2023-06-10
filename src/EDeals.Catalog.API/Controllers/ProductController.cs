@@ -24,7 +24,7 @@ namespace EDeals.Catalog.API.Controllers
             ControllerExtension.Map(await _productService.GetHomePageAsync());
 
         [Produces("application/json")]
-        [HttpPost("add")]
+        [HttpPost()]
         public async Task<ActionResult<PagedResult<ProductResponse>>> AddProduct([FromForm] AddProductModel model) =>
             ControllerExtension.Map(await _productService.AddProduct(model));
 
@@ -42,6 +42,10 @@ namespace EDeals.Catalog.API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<PagedResult<ProductResponse>>> DeleteProduct(Guid id) =>
             ControllerExtension.Map(await _productService.DeleteProduct(id));
-
+        
+        [Produces("application/json")]
+        [HttpPut()]
+        public async Task<ActionResult<PagedResult<ProductResponse>>> UpdateProduct(UpdateProductModel model) =>
+            ControllerExtension.Map(await _productService.UpdateProduct(model));
     }
 }

@@ -38,5 +38,9 @@ namespace EDeals.Catalog.API.Controllers
         [HttpPut]
         public async Task<ActionResult> UpdateDiscount(UpdateDiscountModel model) =>
             ControllerExtension.Map(await _discountService.UpdateDiscount(model));
+        
+        [HttpPost("trigger")]
+        public async Task<ActionResult> ActivateOrDezactivate(ActivateOrDezactivateDiscountModel model) =>
+            ControllerExtension.Map(await _discountService.ActivateOrDezactivateDiscount(model));
     }
 }
