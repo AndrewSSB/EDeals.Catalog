@@ -21,6 +21,7 @@ namespace EDeals.Catalog.Infrastructure.Context
             modelBuilder.ApplyConfiguration(new UserInfoConfiguration());
             modelBuilder.ApplyConfiguration(new ShoppingSessionConfiguration());
             modelBuilder.ApplyConfiguration(new CartItemConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductDiscountConfiguration());
         }
 
         public static void EnableSoftDeleteCascade(this ModelBuilder modelBuilder)

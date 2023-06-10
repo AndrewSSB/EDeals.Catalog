@@ -15,12 +15,16 @@ namespace EDeals.Catalog.Application.Services
     public class DiscountService : Result, IDiscountService
     {
         private readonly IGenericRepository<Discount> _discountRepository;
+        private readonly IGenericRepository<Product> _productRepository;
+        private readonly IGenericRepository<ProductDiscount> _productDiscountRepository;
         private readonly ICustomExecutionContext _executionContext;
 
-        public DiscountService(ICustomExecutionContext executionContext, IGenericRepository<Discount> discountRepository)
+        public DiscountService(ICustomExecutionContext executionContext, IGenericRepository<Discount> discountRepository, IGenericRepository<ProductDiscount> productDiscountRepository, IGenericRepository<Product> productRepository)
         {
             _executionContext = executionContext;
             _discountRepository = discountRepository;
+            _productDiscountRepository = productDiscountRepository;
+            _productRepository = productRepository;
         }
 
         public async Task<ResultResponse> AddDiscount(AddDiscountModel model)
@@ -48,6 +52,31 @@ namespace EDeals.Catalog.Application.Services
             discount.Active = model.IsActive;
 
             await _discountRepository.UpdateAsync(discount);
+
+            return Ok();
+        }
+
+        public async Task<ResultResponse> ApplyDiscount(ApplyDiscountModel model)
+        {
+            var discount = await _discountRepository.GetByIdAsync(model.DiscountId);
+
+            if (discount == null)
+            {
+                return BadRequest<DiscountResponse>(new ResponseError(ErrorCodes.InternalServer, ResponseErrorSeverity.Error, "Discount does not exists"));
+            }
+
+            var product = await _productRepository.GetByIdAsync(model.ProductId);
+            
+            if (product == null)
+            {
+                return BadRequest<DiscountResponse>(new ResponseError(ErrorCodes.InternalServer, ResponseErrorSeverity.Error, "Product does not exists"));
+            }
+
+            await _productDiscountRepository.AddAsync(new ProductDiscount
+            {
+                Discount = discount,
+                Product = product
+            });
 
             return Ok();
         }

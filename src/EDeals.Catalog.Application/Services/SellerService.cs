@@ -52,7 +52,7 @@ namespace EDeals.Catalog.Application.Services
         {
             var seller = await _sellerRepository
                 .ListAllAsQueryable()
-                .Where(x => x.UserId == _executionContext.UserId && x.Id == id)
+                .Where(x => x.Id == id)
                 .Select(x => new SellerResponse
                 {
                     SellerId = x.Id,

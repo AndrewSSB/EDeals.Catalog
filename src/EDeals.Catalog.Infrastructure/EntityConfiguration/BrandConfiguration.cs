@@ -13,6 +13,11 @@ namespace EDeals.Catalog.Infrastructure.EntityConfiguration
             builder
                 .Property(b => b.BrandName)
                 .HasMaxLength(50);
+
+            builder
+                .HasMany(b => b.Products)
+                .WithOne(p => p.Brand)
+                .HasForeignKey(p => p.BrandId);
         }
     }
 }

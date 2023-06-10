@@ -27,6 +27,6 @@ namespace EDeals.Catalog.Domain.Entities.ItemEntities
         public virtual Seller Seller { get; set; }
 
         public virtual ICollection<Image> Images { get; set; }
-        public virtual ICollection<Discount> Discounts { get; set; }
+        public virtual ICollection<ProductDiscount> ProductDiscounts { get; set; }
     }
 }

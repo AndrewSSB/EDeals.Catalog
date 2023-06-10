@@ -14,5 +14,6 @@ namespace EDeals.Catalog.Application.Interfaces
         Task<ResultResponse> UpdateDiscount(UpdateDiscountModel model);
         Task<ResultResponse> DeleteDiscount(int id);
         Task<ResultResponse> ActivateOrDezactivateDiscount(ActivateOrDezactivateDiscountModel model);
+        Task<ResultResponse> ApplyDiscount(ApplyDiscountModel model);
     }
 }

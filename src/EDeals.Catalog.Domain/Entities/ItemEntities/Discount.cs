@@ -10,7 +10,6 @@ namespace EDeals.Catalog.Domain.Entities.ItemEntities
         public decimal DiscountPercent { get; set; }
         public bool Active { get; set; }
         
-        public Guid ProductId { get; set; }
-        public virtual Product Product { get; set; }
+        public virtual ICollection<ProductDiscount> ProductDiscounts { get; set; }
     }
 }

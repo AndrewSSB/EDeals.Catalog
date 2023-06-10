@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EDeals.Catalog.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230606234938_AddedImageName")]
-    partial class AddedImageName
+    [Migration("20230610205830_Remade Database")]
+    partial class RemadeDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -83,9 +83,6 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("char(36)");
-
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
@@ -94,8 +91,6 @@ namespace EDeals.Catalog.Infrastructure.Migrations
 
                     b.HasIndex("DiscountCode")
                         .IsUnique();
-
-                    b.HasIndex("ProductId");
 
                     b.ToTable("Discounts");
                 });
@@ -195,8 +190,7 @@ namespace EDeals.Catalog.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BrandId")
-                        .IsUnique();
+                    b.HasIndex("BrandId");
 
                     b.HasIndex("ProductCategoryId");
 
@@ -246,6 +240,38 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                     b.ToTable("ProductsCategories");
                 });
 
+            modelBuilder.Entity("EDeals.Catalog.Domain.Entities.ItemEntities.ProductDiscount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("DiscountId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DiscountId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductDiscounts");
+                });
+
             modelBuilder.Entity("EDeals.Catalog.Domain.Entities.ItemEntities.ProductInventory", b =>
                 {
                     b.Property<int>("Id")
@@ -292,6 +318,9 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
@@ -535,15 +564,6 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                     b.ToTable("UserInfos");
                 });
 
-            modelBuilder.Entity("EDeals.Catalog.Domain.Entities.ItemEntities.Discount", b =>
-                {
-                    b.HasOne("EDeals.Catalog.Domain.Entities.ItemEntities.Product", "Product")
-                        .WithMany("Discounts")
-                        .HasForeignKey("ProductId");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("EDeals.Catalog.Domain.Entities.ItemEntities.Image", b =>
                 {
                     b.HasOne("EDeals.Catalog.Domain.Entities.ItemEntities.Product", "Product")
@@ -558,8 +578,8 @@ namespace EDeals.Catalog.Infrastructure.Migrations
             modelBuilder.Entity("EDeals.Catalog.Domain.Entities.ItemEntities.Product", b =>
                 {
                     b.HasOne("EDeals.Catalog.Domain.Entities.ItemEntities.Brand", "Brand")
-                        .WithOne("Product")
-                        .HasForeignKey("EDeals.Catalog.Domain.Entities.ItemEntities.Product", "BrandId")
+                        .WithMany("Products")
+                        .HasForeignKey("BrandId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -597,6 +617,25 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                         .HasForeignKey("ParentCategoryId");
 
                     b.Navigation("ParentCategory");
+                });
+
+            modelBuilder.Entity("EDeals.Catalog.Domain.Entities.ItemEntities.ProductDiscount", b =>
+                {
+                    b.HasOne("EDeals.Catalog.Domain.Entities.ItemEntities.Discount", "Discount")
+                        .WithMany("ProductDiscounts")
+                        .HasForeignKey("DiscountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EDeals.Catalog.Domain.Entities.ItemEntities.Product", "Product")
+                        .WithMany("ProductDiscounts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Discount");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("EDeals.Catalog.Domain.Entities.Shopping.CartItem", b =>
@@ -647,15 +686,19 @@ namespace EDeals.Catalog.Infrastructure.Migrations
 
             modelBuilder.Entity("EDeals.Catalog.Domain.Entities.ItemEntities.Brand", b =>
                 {
-                    b.Navigation("Product")
-                        .IsRequired();
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("EDeals.Catalog.Domain.Entities.ItemEntities.Discount", b =>
+                {
+                    b.Navigation("ProductDiscounts");
                 });
 
             modelBuilder.Entity("EDeals.Catalog.Domain.Entities.ItemEntities.Product", b =>
                 {
-                    b.Navigation("Discounts");
-
                     b.Navigation("Images");
+
+                    b.Navigation("ProductDiscounts");
                 });
 
             modelBuilder.Entity("EDeals.Catalog.Domain.Entities.ItemEntities.ProductCategory", b =>

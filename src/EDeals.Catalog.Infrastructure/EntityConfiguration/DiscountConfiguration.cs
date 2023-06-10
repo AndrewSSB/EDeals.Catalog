@@ -30,6 +30,11 @@ namespace EDeals.Catalog.Infrastructure.EntityConfiguration
             builder
                 .Property(d => d.DiscountPercent)
                 .HasPrecision(4, 2);
+
+            builder
+                .HasMany(d => d.ProductDiscounts)
+                .WithOne(p => p.Discount)
+                .HasForeignKey(p => p.DiscountId);
         }
     }
 }

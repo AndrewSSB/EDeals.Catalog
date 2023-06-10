@@ -57,22 +57,15 @@ namespace EDeals.Catalog.Infrastructure.EntityConfiguration
                 .IsRequired();
 
             builder
-                .HasOne(b => b.Brand)
-                .WithOne(p => p.Product)
-                .HasForeignKey<Product>(p => p.BrandId)
-                .IsRequired();
-
-            builder
                 .HasOne(b => b.Seller)
                 .WithOne(p => p.Product)
                 .HasForeignKey<Product>(p => p.SellerId)
                 .IsRequired();
 
             builder
-                .HasMany(p => p.Discounts)
-                .WithOne(d => d.Product)
-                .HasForeignKey(d => d.ProductId)
-                .IsRequired(false);
+                .HasMany(d => d.ProductDiscounts)
+                .WithOne(p => p.Product)
+                .HasForeignKey(p => p.ProductId);
         }
     }
 }

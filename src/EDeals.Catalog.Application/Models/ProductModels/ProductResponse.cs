@@ -50,12 +50,12 @@ namespace EDeals.Catalog.Application.Models.ProductModels
                 {
                     Name = product.Seller.SellerName
                 },
-                Discounts = product.Discounts.Select(x => new Discounts
+                Discounts = product.ProductDiscounts.Select(x => new Discounts
                 {
-                    DiscountCode = x.DiscountCode,
-                    Description = x.Description,
-                    DiscountName = x.DiscountName,
-                    DiscountPercent = x.DiscountPercent
+                    DiscountCode = x.Discount.DiscountCode,
+                    Description = x.Discount.Description,
+                    DiscountName = x.Discount.DiscountName,
+                    DiscountPercent = x.Discount.DiscountPercent
                 }).ToList()
             };
     }
