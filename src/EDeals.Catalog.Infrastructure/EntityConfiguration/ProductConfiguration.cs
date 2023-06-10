@@ -57,10 +57,9 @@ namespace EDeals.Catalog.Infrastructure.EntityConfiguration
                 .IsRequired();
 
             builder
-                .HasOne(b => b.Seller)
-                .WithOne(p => p.Product)
-                .HasForeignKey<Product>(p => p.SellerId)
-                .IsRequired();
+                .HasOne(p => p.Seller)
+                .WithMany(s => s.Products)
+                .HasForeignKey(p => p.SellerId);
 
             builder
                 .HasMany(d => d.ProductDiscounts)
