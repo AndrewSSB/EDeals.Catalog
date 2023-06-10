@@ -1,4 +1,5 @@
-﻿using EDeals.Catalog.Domain.Entities.ItemEntities;
+﻿using EDeals.Catalog.Application.Models.CategoryModels;
+using EDeals.Catalog.Domain.Entities.ItemEntities;
 using System.Linq.Expressions;
 
 namespace EDeals.Catalog.Application.Models.ProductModels
@@ -32,11 +33,15 @@ namespace EDeals.Catalog.Application.Models.ProductModels
                 Color = product.Color,
                 Images = new Images
                 {
-                    ScrollImages = product.Images.Select(x => x.ImageUrl).ToList()
+                    MainImage = product.Images.Select(x => x.ImageUrl).FirstOrDefault(),
+                    ScrollImages = product.Images.Skip(1).Select(x => x.ImageUrl).ToList()
                 },
                 Categories = new Categories
                 {
-
+                    CategoryId = product.ProductCategory.Id,
+                    CategoryName = product.ProductCategory.CategoryName,
+                    Description = product.Description,
+                    ParentCategoryId = product.ProductCategoryId
                 },
                 Inventory = new Inventory
                 {
@@ -68,7 +73,13 @@ namespace EDeals.Catalog.Application.Models.ProductModels
 
     public sealed class Categories
     {
-        public string? TrbSchimbat { get; set; }
+        public int CategoryId { get; set; }
+
+        public string? CategoryName { get; set; }
+        public string? Description { get; set; }
+
+        public int? ParentCategoryId { get; set; }
+        public Categories? ParentCategory { get; set; }
     }
 
     public sealed class Inventory
