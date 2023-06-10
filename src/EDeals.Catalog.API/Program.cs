@@ -6,6 +6,7 @@ using EDeals.Catalog.Infrastructure.Shared.Middlewares;
 using EDeals.Catalog.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using EDeals.Catalog.Application;
+using EDeals.Catalog.Infrastructure.Seeders;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Verbose()
@@ -98,4 +99,8 @@ void RunMigrations(WebApplication app)
 async Task RunSeeders(WebApplication app)
 {
     using var scope = app.Services.CreateScope();
+
+    var seeders = scope.ServiceProvider.GetRequiredService<CategoriesSeeder>();
+    await seeders.AddTopCategories();
+    await seeders.AddSubcategories();
 }

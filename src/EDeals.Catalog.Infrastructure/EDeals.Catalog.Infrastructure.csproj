@@ -33,8 +33,4 @@
     <ProjectReference Include="..\EDeals.Catalog.Application\EDeals.Catalog.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Seeders\" />
-  </ItemGroup>
-
 </Project>

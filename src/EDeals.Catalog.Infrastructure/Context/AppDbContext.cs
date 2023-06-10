@@ -13,19 +13,19 @@ namespace EDeals.Catalog.Infrastructure.Context
         }
 
         // should be public for interface - not ok
-        DbSet<Product> Products { get; set; }
-        DbSet<ProductCategory> ProductsCategories { get; set; }
-        DbSet<Image> Images { get; set; }
-        DbSet<ProductInventory> ProductsInventory { get; set; }
-        DbSet<Brand> Brands { get; set; }
-        DbSet<Seller> Sellers { get; set; }
-        DbSet<Discount> Discounts { get; set; }
-        DbSet<UserInfo> UserInfos { get; set; }
-        DbSet<UserAddress> UserAddresses { get; set; }
-        DbSet<ShoppingSession> ShoppingSessions { get; set; }
-        DbSet<CartItem> CartItems { get; set; }
-        DbSet<Order> Orders { get; set; }
-        DbSet<OrderedItem> OrderedItems { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ProductCategory> ProductsCategories { get; set; }
+        public DbSet<Image> Images { get; set; }
+        public DbSet<ProductInventory> ProductsInventory { get; set; }
+        public DbSet<Brand> Brands { get; set; }
+        public DbSet<Seller> Sellers { get; set; }
+        public DbSet<Discount> Discounts { get; set; }
+        public DbSet<UserInfo> UserInfos { get; set; }
+        public DbSet<UserAddress> UserAddresses { get; set; }
+        public DbSet<ShoppingSession> ShoppingSessions { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderedItem> OrderedItems { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)

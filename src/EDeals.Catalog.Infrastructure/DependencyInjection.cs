@@ -8,6 +8,7 @@ using EDeals.Catalog.Infrastructure.Shared.ExecutionContext;
 using EDeals.Catalog.Application.Interfaces;
 using EDeals.Catalog.Infrastructure.Repositories;
 using EDeals.Catalog.Application.Settings;
+using EDeals.Catalog.Infrastructure.Seeders;
 
 namespace EDeals.Catalog.Infrastructure
 {
@@ -42,6 +43,7 @@ namespace EDeals.Catalog.Infrastructure
             services.AddSingleton<IDateTimeHelper, DateTimeHelper>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddHttpContextAccessor().AddScoped<ICustomExecutionContext, CustomExecutionContext>();
+            services.AddTransient<CategoriesSeeder>();
 
             return services;
         }
