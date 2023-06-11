@@ -7,6 +7,7 @@ using EDeals.Catalog.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using EDeals.Catalog.Application;
 using EDeals.Catalog.Infrastructure.Seeders;
+using Stripe;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Verbose()
@@ -37,6 +38,10 @@ try
         .AddInfraConfigureSettings(builder.Configuration);
 
     builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
+    // Add stripe
+    var stripeSettings = builder.Configuration.GetSection(nameof(StripeSettings)).Get<StripeSettings>();
+    StripeConfiguration.ApiKey = stripeSettings.ApiKey;
 
     builder.Services.AddAuthorization(opt =>
     {

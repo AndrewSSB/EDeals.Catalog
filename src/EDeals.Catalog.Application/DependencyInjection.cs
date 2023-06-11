@@ -20,6 +20,7 @@ namespace EDeals.Catalog.Application
             services.AddTransient<ISellerService, SellerService>();
             services.AddTransient<IDiscountService, DiscountService>();
             services.AddTransient<IFavouriteService, FavouriteService>();
+            services.AddTransient<IStripeService, StripeService>();
 
             services.AddMappings();
 

@@ -53,6 +53,7 @@ namespace EDeals.Catalog.Infrastructure
             services.Configure<DbSettings>(configuration.GetSection(nameof(DbSettings)));
             services.Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
             services.Configure<AzureSettings>(configuration.GetSection(nameof(AzureSettings)));
+            services.Configure<StripeSettings>(configuration.GetSection(nameof(StripeSettings)));
 
             return services;
         }

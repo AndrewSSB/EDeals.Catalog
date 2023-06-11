@@ -23,6 +23,15 @@ namespace EDeals.Catalog.Application.Services
 
         public async Task<ResultResponse> AddFavourite(AddFavouriteModel model)
         {
+            var exists = await _favourites.ListAllAsQueryable()
+                .Where(x => x.ProductId == model.ProductId && x.UserId == _executionContext.UserId)
+                .FirstOrDefaultAsync();
+
+            if (exists != null)
+            {
+                return Ok();
+            }
+
             await _favourites.AddAsync(new Favourites
             {
                 UserId = _executionContext.UserId,
