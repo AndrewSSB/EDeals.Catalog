@@ -2,5 +2,6 @@
 {
     public class ProductsFilters : PaginationCriteria
     {
+        public string? ProductName { get; set; }
     }
 }

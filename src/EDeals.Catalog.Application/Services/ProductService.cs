@@ -136,6 +136,12 @@ namespace EDeals.Catalog.Application.Services
                     .Include(x => x.Seller)
                     .Include(x => x.Images)
                 .Select(ProductResponse.Projection());
+            
+            if (!string.IsNullOrEmpty(filters.ProductName))
+            {
+                productsQueryable = productsQueryable.Where(x => x.ShortDescription!.Contains(filters.ProductName) ||
+                                                            x.Title!.Contains(filters.ProductName));
+            }
 
             return Ok(await productsQueryable.MapToPagedResultAsync(filters));
         }

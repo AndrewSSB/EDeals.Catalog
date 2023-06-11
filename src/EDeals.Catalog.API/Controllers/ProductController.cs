@@ -35,8 +35,8 @@ namespace EDeals.Catalog.API.Controllers
 
         [Produces("application/json")]
         [HttpGet("all")]
-        public async Task<ActionResult<PagedResult<ProductResponse>>> GetProducts(int start, int limit) =>
-            ControllerExtension.Map(await _productService.GetProducts(new ProductsFilters { Start = start, Limit = limit}));
+        public async Task<ActionResult<PagedResult<ProductResponse>>> GetProducts(int start, int limit, string? productName) =>
+            ControllerExtension.Map(await _productService.GetProducts(new ProductsFilters { Start = start, Limit = limit, ProductName = productName}));
 
         [Produces("application/json")]
         [HttpDelete("{id}")]

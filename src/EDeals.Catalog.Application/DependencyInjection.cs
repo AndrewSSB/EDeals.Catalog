@@ -19,6 +19,7 @@ namespace EDeals.Catalog.Application
             services.AddTransient<IBrandService, BrandService>();
             services.AddTransient<ISellerService, SellerService>();
             services.AddTransient<IDiscountService, DiscountService>();
+            services.AddTransient<IFavouriteService, FavouriteService>();
 
             services.AddMappings();
 
