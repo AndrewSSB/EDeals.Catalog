@@ -54,6 +54,7 @@ namespace EDeals.Catalog.Application.Services
 
             var cartItem = await _cartRepository
                 .ListAllAsQueryable()
+                .IgnoreQueryFilters()
                 .Where(x => x.ProductId == model.ProductId)
                 .FirstOrDefaultAsync();
 
@@ -63,7 +64,7 @@ namespace EDeals.Catalog.Application.Services
                 {
                     Product = product,
                     Quantity = model.Quantity,
-                    ShoppingSession = shoppingSession 
+                    ShoppingSession = shoppingSession
                 });
             
                 shoppingSession.CartItems.Add(cartItem);
@@ -71,11 +72,23 @@ namespace EDeals.Catalog.Application.Services
             }
             else
             {
-                var quantityBefore = cartItem.Quantity;
-                cartItem.Quantity += model.Quantity;
-                await _cartRepository.UpdateAsync(cartItem);
-                var price = quantityBefore > cartItem.Quantity ? -(Math.Abs(quantityBefore - cartItem.Quantity) * cartItem.Product.Price) : (Math.Abs(quantityBefore - cartItem.Quantity) * cartItem.Product.Price);
-                shoppingSession!.Total += price;
+                if (cartItem.IsDeleted)
+                {
+                    var quantityBefore = cartItem.Quantity;
+                    cartItem.IsDeleted = false;
+                    cartItem.Quantity = model.Quantity;
+                    var price = quantityBefore > cartItem.Quantity ? -(Math.Abs(quantityBefore - cartItem.Quantity) * cartItem.Product.Price) : (Math.Abs(quantityBefore - cartItem.Quantity) * cartItem.Product.Price);
+                    var isEqual = quantityBefore == cartItem.Quantity;
+                    shoppingSession!.Total += isEqual ? cartItem.Quantity * cartItem.Product.Price : price;
+                } else
+                {
+                    var quantityBefore = cartItem.Quantity;
+                    cartItem.Quantity += model.Quantity;
+                    await _cartRepository.UpdateAsync(cartItem);
+                    var price = quantityBefore > cartItem.Quantity ? -(Math.Abs(quantityBefore - cartItem.Quantity) * cartItem.Product.Price) : (Math.Abs(quantityBefore - cartItem.Quantity) * cartItem.Product.Price);
+                    shoppingSession!.Total += price;
+                }
+
             }
 
             await _shoppingRepository.UpdateAsync(shoppingSession);
@@ -86,19 +99,29 @@ namespace EDeals.Catalog.Application.Services
         public async Task<ResultResponse> DeleteCartItem(int id)
         {
             var cartItem = await _cartRepository
-                .GetByIdAsync(id);
+                .ListAllAsQueryable()
+                .Include(x => x.Product)
+                .Where(x => x.Id == id)
+                .FirstOrDefaultAsync();
 
             if (cartItem != null)
             {
-                var shoppingSession = await _shoppingRepository.GetByIdAsync(cartItem.ShoppingSessionId);
+                var shoppingSession = await _shoppingRepository
+                    .ListAllAsQueryable()
+                    .Include(x => x.CartItems)
+                    .Where(x => x.Id == cartItem.ShoppingSessionId)
+                    .FirstOrDefaultAsync();
 
                 await _cartRepository.DeleteAsync<int>(cartItem);
                 
-                if (shoppingSession!.CartItems.Count == 1)
+                if (shoppingSession!.CartItems.Count <= 1)
                 {
                     await _shoppingRepository.DeleteAsync<int>(shoppingSession);
+                }else
+                {
+                    shoppingSession.Total -= cartItem.Quantity * cartItem.Product.Price;
+                    await _shoppingRepository.UpdateAsync(shoppingSession);
                 }
-
             }
 
             return Ok();
