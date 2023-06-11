@@ -55,7 +55,7 @@ namespace EDeals.Catalog.Application.Services
             var cartItem = await _cartRepository
                 .ListAllAsQueryable()
                 .IgnoreQueryFilters()
-                .Where(x => x.ProductId == model.ProductId && x.ShoppingSessionId == shoppingSession.Id)
+                .Where(x => x.ProductId == model.ProductId)
                 .FirstOrDefaultAsync();
 
             if (cartItem == null)
@@ -77,6 +77,7 @@ namespace EDeals.Catalog.Application.Services
                     var quantityBefore = cartItem.Quantity;
                     cartItem.IsDeleted = false;
                     cartItem.Quantity = model.Quantity;
+                    cartItem.ShoppingSession = shoppingSession;
                     var price = quantityBefore > cartItem.Quantity ? -(Math.Abs(quantityBefore - cartItem.Quantity) * cartItem.Product.Price) : (Math.Abs(quantityBefore - cartItem.Quantity) * cartItem.Product.Price);
                     var isEqual = quantityBefore == cartItem.Quantity;
                     shoppingSession!.Total += isEqual ? cartItem.Quantity * cartItem.Product.Price : price;
