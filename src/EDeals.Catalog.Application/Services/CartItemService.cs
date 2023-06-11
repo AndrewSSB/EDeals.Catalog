@@ -90,7 +90,15 @@ namespace EDeals.Catalog.Application.Services
 
             if (cartItem != null)
             {
+                var shoppingSession = await _shoppingRepository.GetByIdAsync(cartItem.ShoppingSessionId);
+
                 await _cartRepository.DeleteAsync<int>(cartItem);
+                
+                if (shoppingSession!.CartItems.Count == 1)
+                {
+                    await _shoppingRepository.DeleteAsync<int>(shoppingSession);
+                }
+
             }
 
             return Ok();
