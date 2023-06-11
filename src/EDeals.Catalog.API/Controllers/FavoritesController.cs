@@ -26,7 +26,7 @@ namespace EDeals.Catalog.API.Controllers
         
         [Produces("application/json")]
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteFavorites(int id) =>
+        public async Task<ActionResult> DeleteFavorites(Guid id) =>
             ControllerExtension.Map(await _service.DeleteFavourite(id));
         
         [Produces("application/json")]

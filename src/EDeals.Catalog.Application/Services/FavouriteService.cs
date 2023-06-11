@@ -32,9 +32,12 @@ namespace EDeals.Catalog.Application.Services
             return Ok();
         }
 
-        public async Task<ResultResponse> DeleteFavourite(int id)
+        public async Task<ResultResponse> DeleteFavourite(Guid productId)
         {
-            var favouriteItem = await _favourites.GetByIdAsync(id);
+            var favouriteItem = await _favourites.
+                ListAllAsQueryable()
+                .Where(x => x.ProductId == productId)
+                .FirstOrDefaultAsync();
             
             if (favouriteItem != null)
             {
