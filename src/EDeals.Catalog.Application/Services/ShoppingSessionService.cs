@@ -7,6 +7,7 @@ using EDeals.Catalog.Domain.Common.GenericResponses.ServiceResponse;
 using EDeals.Catalog.Domain.Entities.ItemEntities;
 using EDeals.Catalog.Domain.Entities.Shopping;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EDeals.Catalog.Application.Services
 {
@@ -41,7 +42,11 @@ namespace EDeals.Catalog.Application.Services
         public async Task<ResultResponse<ShoppingSessionResponse>> GetShoppingSession(int id)
         {
             var shoppingSession = await _shoppingRepository
-                .GetByIdAsync(id);
+                .ListAllAsQueryable()
+                    .Include(x => x.CartItems)
+                        .ThenInclude(x => x.Product)
+                .Where(x => x.Id == id || x.UserId == _executionContext.UserId)
+                .FirstOrDefaultAsync();
 
             if (shoppingSession == null)
             {
