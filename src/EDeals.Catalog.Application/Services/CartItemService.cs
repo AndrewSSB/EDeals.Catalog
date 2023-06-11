@@ -49,23 +49,34 @@ namespace EDeals.Catalog.Application.Services
 
             shoppingSession ??= await _shoppingRepository.AddAsync(new ShoppingSession
             {
-                //CartItems = new List<CartItem>
-                //{
-                //    cartItme
-                //},
-                //Total = cartItme.Product.Price * cartItme.Quantity,
                 UserId = _executionContext.UserId
             });
 
-            var cartItem = await _cartRepository.AddAsync(new CartItem
+            var cartItem = await _cartRepository
+                .ListAllAsQueryable()
+                .Where(x => x.ProductId == model.ProductId)
+                .FirstOrDefaultAsync();
+
+            if (cartItem == null)
             {
-                Product = product,
-                Quantity = model.Quantity,
-                ShoppingSession = shoppingSession 
-            });
+                cartItem = await _cartRepository.AddAsync(new CartItem
+                {
+                    Product = product,
+                    Quantity = model.Quantity,
+                    ShoppingSession = shoppingSession 
+                });
             
-            shoppingSession.CartItems.Add(cartItem);
-            shoppingSession.Total += cartItem.Product.Price * cartItem.Quantity;
+                shoppingSession.CartItems.Add(cartItem);
+                shoppingSession.Total += cartItem.Product.Price * cartItem.Quantity;
+            }
+            else
+            {
+                var quantityBefore = cartItem.Quantity;
+                cartItem.Quantity += model.Quantity;
+                await _cartRepository.UpdateAsync(cartItem);
+                var price = quantityBefore > cartItem.Quantity ? -(Math.Abs(quantityBefore - cartItem.Quantity) * cartItem.Product.Price) : (Math.Abs(quantityBefore - cartItem.Quantity) * cartItem.Product.Price);
+                shoppingSession!.Total += price;
+            }
 
             await _shoppingRepository.UpdateAsync(shoppingSession);
 
