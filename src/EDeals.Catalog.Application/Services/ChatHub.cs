@@ -8,12 +8,12 @@ namespace EDeals.Catalog.Application.Services
     {
         private static Dictionary<string, string> connectedUsers = new Dictionary<string, string>();
         
-        public async Task JoinChannel(Guid channelId)
+        public async Task JoinChannel(string channelId)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, channelId.ToString());
         }
         
-        public async Task LeaveChannel(Guid channelId)
+        public async Task LeaveChannel(string channelId)
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, channelId.ToString());
         }
