@@ -23,6 +23,7 @@ namespace EDeals.Catalog.Infrastructure.Context
             modelBuilder.ApplyConfiguration(new CartItemConfiguration());
             modelBuilder.ApplyConfiguration(new ProductDiscountConfiguration());
             modelBuilder.ApplyConfiguration(new FavouritesConfiguration());
+            modelBuilder.ApplyConfiguration(new MessagesConfiguration());
         }
 
         public static void EnableSoftDeleteCascade(this ModelBuilder modelBuilder)

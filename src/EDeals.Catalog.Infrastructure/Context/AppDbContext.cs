@@ -28,6 +28,7 @@ namespace EDeals.Catalog.Infrastructure.Context
         public DbSet<OrderedItem> OrderedItems { get; set; }
         public DbSet<ProductDiscount> ProductDiscounts { get; set; }
         public DbSet<Favourites> Favourites { get; set; }
+        public DbSet<Messages> Messages { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
