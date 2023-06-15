@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using EDeals.Catalog.Application;
 using EDeals.Catalog.Infrastructure.Seeders;
 using Stripe;
+using EDeals.Catalog.Application.Services;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Verbose()
@@ -39,6 +40,8 @@ try
 
     builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
+    builder.Services.AddSignalR();
+
     // Add stripe
     var stripeSettings = builder.Configuration.GetSection(nameof(StripeSettings)).Get<StripeSettings>();
     StripeConfiguration.ApiKey = stripeSettings.ApiKey;
@@ -66,9 +69,21 @@ try
     }
 
     app.UseCors(corsOpt => {
-        corsOpt.AllowAnyOrigin()
+        corsOpt.SetIsOriginAllowed(x => true)
                .AllowAnyHeader()
-               .AllowAnyMethod();
+               .AllowAnyMethod()
+               .AllowCredentials();
+    });
+
+    app.UseRouting();
+
+    app.UseAuthorization();
+    
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapHub<ChatHub>("/chat");
+
+        endpoints.MapControllers();
     });
 
     app.UseMiddleware<ExceptionMiddleware>();
@@ -77,9 +92,6 @@ try
 
     app.UseHttpsRedirection();
 
-    app.UseAuthorization();
-
-    app.MapControllers();
 
     app.Run();
 }

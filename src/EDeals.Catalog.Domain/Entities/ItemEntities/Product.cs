@@ -28,5 +28,6 @@ namespace EDeals.Catalog.Domain.Entities.ItemEntities
 
         public virtual ICollection<Image> Images { get; set; }
         public virtual ICollection<ProductDiscount> ProductDiscounts { get; set; }
+        public virtual ICollection<ProductReview> ProductReviews { get; set; }
     }
 }
