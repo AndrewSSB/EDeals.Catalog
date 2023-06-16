@@ -34,7 +34,7 @@ namespace EDeals.Catalog.Application.Models.ProductModels
                 Images = new Images
                 {
                     MainImage = product.Images.Select(x => x.ImageUrl).FirstOrDefault(),
-                    ScrollImages = product.Images.Skip(1).Select(x => x.ImageUrl).ToList()
+                    ScrollImages = product.Images.Select(x => x.ImageUrl).ToList()
                 },
                 Categories = new Categories
                 {

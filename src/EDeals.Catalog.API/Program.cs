@@ -40,6 +40,7 @@ try
 
     builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
+    // Adaugarea serviciului
     builder.Services.AddSignalR();
 
     // Add stripe
