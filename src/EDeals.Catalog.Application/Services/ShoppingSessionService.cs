@@ -45,6 +45,7 @@ namespace EDeals.Catalog.Application.Services
                 .ListAllAsQueryable()
                     .Include(x => x.CartItems)
                         .ThenInclude(x => x.Product)
+                        .ThenInclude(x => x.Images)
                 .Where(x => x.Id == id || x.UserId == _executionContext.UserId)
                 .FirstOrDefaultAsync();
 
