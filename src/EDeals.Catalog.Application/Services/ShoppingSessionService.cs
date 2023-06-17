@@ -64,7 +64,10 @@ namespace EDeals.Catalog.Application.Services
                     ProductName = x.Product.Name,
                     ShoppingSessionId = x.ShoppingSessionId,
                     ProductPrice = x.Product.Price,
-                    Quantity = x.Quantity
+                    Quantity = x.Quantity,
+                    Image = x.Product.Images.Select(x => x.ImageUrl).FirstOrDefault(),
+                    Description = x.Product.ShortDescription
+
                 }).ToList()
             });
         }
