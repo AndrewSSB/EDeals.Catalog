@@ -8,6 +8,6 @@ namespace EDeals.Catalog.Application.Interfaces
         public Task ReceiveMessages(List<MessagesResponse> messages);
         public Task UpdateQueueCountWithDelta(int countDelta);
         public Task CloseChat(Guid conversationId);
-        public Task ReceiveNotification(string sender, string receiver, string type);
+        public Task ReceiveNotification(string sender, string receiver, string type, string channelId);
     }
 }

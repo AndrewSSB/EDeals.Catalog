@@ -37,7 +37,7 @@ namespace EDeals.Catalog.Application.Services
             var existingConnection = await DoesChannelExist(channelId);
 
             await Clients.Group(existingConnection ?? channelId).ReceiveMessage(sender, receiver, message, DateTime.UtcNow);
-            await Clients.Group("generic").ReceiveNotification(sender, receiver, "message");
+            await Clients.Group("generic").ReceiveNotification(sender, receiver, "message", channelId);
 
             await _messageService.CreateMessage(sender, receiver, existingConnection ?? channelId, message);
         }
