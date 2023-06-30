@@ -27,9 +27,9 @@ namespace EDeals.Catalog.API.Controllers
             ControllerExtension.Map(await _discountService.DeleteDiscount(id));
         
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<DiscountResponse>> GetDiscount(int id) =>
-            ControllerExtension.Map(await _discountService.GetDiscount(id));
+        [HttpGet("{discountCode}")]
+        public async Task<ActionResult<DiscountResponse>> GetDiscount(string discountCode) =>
+            ControllerExtension.Map(await _discountService.GetDiscount(discountCode));
 
         [HttpGet("all")]
         public async Task<ActionResult<PagedResult<DiscountResponse>>> GetDiscounts(int start, int limit) =>

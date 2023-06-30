@@ -26,6 +26,10 @@ namespace EDeals.Catalog.API.Controllers
         public async Task<ActionResult> AddShoppingSession(AddShoppingSessionModel model) => 
             ControllerExtension.Map(await _sessionService.AddShoppingSession(model));
         
+        [HttpPost("apply-discount")]
+        public async Task<ActionResult> ApplyShoppingDiscount(ApplyShoppingDiscount model) => 
+            ControllerExtension.Map(await _sessionService.ApplyDiscountToShoppingSession(model));
+        
 
         [HttpPut]
         public async Task<ActionResult> UpdateShoppingSession(UpdateShoppingSessionModel model) =>

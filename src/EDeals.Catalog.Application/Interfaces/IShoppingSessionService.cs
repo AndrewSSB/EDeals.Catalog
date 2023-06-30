@@ -9,5 +9,6 @@ namespace EDeals.Catalog.Application.Interfaces
         Task<ResultResponse<ShoppingSessionResponse>> GetShoppingSession(int id);
         Task<ResultResponse> UpdateShoppingSession(UpdateShoppingSessionModel model);
         Task<ResultResponse> DeleteShoppingSession(int id);
+        Task<ResultResponse> ApplyDiscountToShoppingSession(ApplyShoppingDiscount model);
     }
 }

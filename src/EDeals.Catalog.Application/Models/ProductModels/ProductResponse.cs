@@ -20,6 +20,8 @@ namespace EDeals.Catalog.Application.Models.ProductModels
         public ProductBrand? Brand { get; set; }
         public ProductSeller? Seller { get; set; }
         public List<Discounts>? Discounts { get; set; }
+        public List<Reviews>? Reviews { get; set; }
+        public List<Comments>? Comments { get; set; }
 
         public static Expression<Func<Product, ProductResponse>> Projection() =>
             product => new ProductResponse
@@ -41,7 +43,7 @@ namespace EDeals.Catalog.Application.Models.ProductModels
                     CategoryId = product.ProductCategory.Id,
                     CategoryName = product.ProductCategory.CategoryName,
                     Description = product.Description,
-                    ParentCategoryId = product.ProductCategoryId
+                    ParentCategoryId = product.ProductCategory.ParentCategoryId
                 },
                 Inventory = new Inventory
                 {
@@ -61,7 +63,27 @@ namespace EDeals.Catalog.Application.Models.ProductModels
                     Description = x.Discount.Description,
                     DiscountName = x.Discount.DiscountName,
                     DiscountPercent = x.Discount.DiscountPercent
-                }).ToList()
+                }).ToList(),
+                Reviews = product.ProductReviews.Where(x => x.IsReview).Select(x => new Reviews
+                {
+                    FirstName = x.UserInfo.FirstName,
+                    LastName = x.UserInfo.LastName,
+                    Comment = x.Comment,
+                    CreatedAt = x.CreatedAt,
+                    Email = x.UserInfo.Email,
+                    Rating = x.Rating,
+                    Title = x.Title,
+                    Username = x.UserInfo.UserName,
+                    HasBoughtProduct = x.HasBoughtProduct
+                }).ToList(),
+                Comments = product.ProductReviews.Where(x => !x.IsReview).Select(x => new Comments
+                {
+                    FirstName = x.UserInfo.FirstName,
+                    LastName = x.UserInfo.LastName,
+                    Comment = x.Comment,
+                    CreatedAt= x.CreatedAt,
+                    Username = x.UserInfo.UserName
+                }).ToList(),
             };
     }
 
@@ -103,5 +125,26 @@ namespace EDeals.Catalog.Application.Models.ProductModels
         public string? DiscountName { get; set; }
         public string? Description { get; set; }
         public decimal DiscountPercent { get; set; }
+    }
+    public sealed class Reviews
+    {
+        public float Rating { get; set; }
+        public string Title { get; set; }
+        public string Comment { get; set; }
+        public bool HasBoughtProduct { get; set; }
+        public string Username { get; set; }
+        public string Email { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public DateTime CreatedAt { get; set; }
+    }
+    
+    public sealed class Comments
+    {
+        public string Comment { get; set; }
+        public string Username { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

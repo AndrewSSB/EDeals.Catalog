@@ -15,6 +15,15 @@ namespace EDeals.Catalog.Application.Models.CategoryModels
 
         public List<CategoryResponse>? SubCategories { get; set; }
 
+        public static Expression<Func<ProductCategory, CategoryResponse>> Categories() =>
+            category => new CategoryResponse
+            {
+                CategoryId = category.Id,
+                CategoryName = category.CategoryName,
+                Description = category.Description,
+                ParentCategoryId = category.ParentCategoryId,
+            };
+
         public static Expression<Func<ProductCategory, CategoryResponse>> Projection() =>
             category => new CategoryResponse
             {
@@ -26,12 +35,15 @@ namespace EDeals.Catalog.Application.Models.CategoryModels
                 {
                     CategoryName = category.ParentCategory.CategoryName,
                     Description = category.ParentCategory.Description,
+                    CategoryId = category.ParentCategory.Id,
+                    ParentCategoryId = category.ParentCategoryId
                 } : null,
                 SubCategories = category.SubCategories.Select(subCategory => new CategoryResponse
                 {
                     CategoryName = subCategory.CategoryName,
                     Description = subCategory.Description,
-                    ParentCategoryId = subCategory.ParentCategoryId
+                    ParentCategoryId = subCategory.ParentCategoryId,
+                    CategoryId = subCategory.Id,
                 }).ToList()
             };
     }

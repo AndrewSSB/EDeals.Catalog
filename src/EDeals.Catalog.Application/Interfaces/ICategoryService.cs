@@ -8,7 +8,7 @@ namespace EDeals.Catalog.Application.Interfaces
     {
         Task<ResultResponse> AddCategory(AddCategoryModel model);
         Task<ResultResponse<CategoryResponse>> GetCategory(int id);
-        Task<ResultResponse<PagedResult<CategoryResponse>>> GetCategories();
+        Task<ResultResponse<List<CategoryResponse>>> GetCategories();
         Task<ResultResponse> UpdateCategory(UpdateCategoryModel model);
         Task<ResultResponse> DeleteCategory(int id);
     }

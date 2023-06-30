@@ -8,7 +8,7 @@ namespace EDeals.Catalog.Domain.Entities.Shopping
         public int Quantity { get; set; }
         
         public Guid ProductId { get; set; }
-        public virtual Product Product { get; set; }
+        public Product Product { get; set; }
 
         public int ShoppingSessionId { get; set; }
         public virtual ShoppingSession ShoppingSession { get; set; }

@@ -1,4 +1,5 @@
-﻿using EDeals.Catalog.Application.Interfaces;
+﻿using EDeals.Catalog.Application.ApplicationExtensions;
+using EDeals.Catalog.Application.Interfaces;
 using EDeals.Catalog.Application.Models.CategoryModels;
 using EDeals.Catalog.Application.Pagination.Filters;
 using EDeals.Catalog.Application.Pagination.Helpers;
@@ -50,15 +51,29 @@ namespace EDeals.Catalog.Application.Services
             return Ok(category);
         }
 
-        public async Task<ResultResponse<PagedResult<CategoryResponse>>> GetCategories()
+        public async Task<ResultResponse<List<CategoryResponse>>> GetCategories()
         {
-            var categoriesQueryable = _productCategory
+            var categories = await _productCategory
                 .ListAllAsQueryable()
                     .Include(x => x.ParentCategory)
                     .Include(x => x.SubCategories)
-                .Select(CategoryResponse.Projection());
+                .Select(CategoryResponse.Categories())
+                .ToListAsync();
 
-            return Ok(await categoriesQueryable.MapToPagedResultAsync(new ProductsFilters()));
+            var categoryDictionary = categories.ToDictionary(x => x.CategoryId);
+            foreach (var category in categories)
+            {
+                if (category.ParentCategoryId.HasValue &&
+                    categoryDictionary.TryGetValue(category.ParentCategoryId.Value, out var parentCategory))
+                {
+                    parentCategory.SubCategories ??= new List<CategoryResponse>();
+                    parentCategory.SubCategories.Add(category);
+                }
+            }
+
+            var topLevelCategories = categories.Where(x => !x.ParentCategoryId.HasValue).ToList();
+
+            return Ok(topLevelCategories);
         }
 
         public async Task<ResultResponse> UpdateCategory(UpdateCategoryModel model)

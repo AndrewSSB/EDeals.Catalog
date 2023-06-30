@@ -314,11 +314,14 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<bool>("IsReview")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<Guid>("ProductId")
                         .HasColumnType("char(36)");
 
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
+                    b.Property<float>("Rating")
+                        .HasColumnType("float");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -397,13 +400,17 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("varchar(500)");
 
+                    b.Property<string>("Receiver")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Sender")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -438,8 +445,7 @@ namespace EDeals.Catalog.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId")
-                        .IsUnique();
+                    b.HasIndex("ProductId");
 
                     b.HasIndex("ShoppingSessionId");
 
@@ -484,6 +490,9 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)");
 
+                    b.Property<int?>("DiscountId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
@@ -509,6 +518,21 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("AddressAditionally")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)");
@@ -516,10 +540,24 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<bool>("IsDraft")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<int>("PaymentType")
                         .HasColumnType("int");
 
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Region")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<decimal>("Total")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("TransportPrice")
                         .HasColumnType("decimal(65,30)");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -563,8 +601,6 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
-
-                    b.HasIndex("ProductId");
 
                     b.ToTable("OrderedItems");
                 });
@@ -771,8 +807,9 @@ namespace EDeals.Catalog.Infrastructure.Migrations
             modelBuilder.Entity("EDeals.Catalog.Domain.Entities.Shopping.CartItem", b =>
                 {
                     b.HasOne("EDeals.Catalog.Domain.Entities.ItemEntities.Product", "Product")
-                        .WithOne()
-                        .HasForeignKey("EDeals.Catalog.Domain.Entities.Shopping.CartItem", "ProductId")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("EDeals.Catalog.Domain.Entities.Shopping.ShoppingSession", "ShoppingSession")
@@ -794,15 +831,7 @@ namespace EDeals.Catalog.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EDeals.Catalog.Domain.Entities.ItemEntities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Order");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("EDeals.Catalog.Domain.Entities.UserAddress", b =>

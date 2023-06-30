@@ -55,7 +55,7 @@ namespace EDeals.Catalog.Application.Services
             var cartItem = await _cartRepository
                 .ListAllAsQueryable()
                 .IgnoreQueryFilters()
-                .Where(x => x.ProductId == model.ProductId)
+                .Where(x => x.ProductId == model.ProductId && x.ShoppingSessionId == shoppingSession.Id)
                 .FirstOrDefaultAsync();
 
             if (cartItem == null)

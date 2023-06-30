@@ -93,9 +93,9 @@ namespace EDeals.Catalog.Application.Services
             return Ok();
         }
 
-        public async Task<ResultResponse<DiscountResponse>> GetDiscount(int id)
+        public async Task<ResultResponse<DiscountResponse>> GetDiscount(string discountCode)
         {
-            var discount = await _discountRepository.GetByIdAsync(id);
+            var discount = await _discountRepository.ListAllAsQueryable().Where(x => x.DiscountCode == discountCode).FirstOrDefaultAsync();
 
             if (discount == null)
             {

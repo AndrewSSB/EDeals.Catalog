@@ -29,7 +29,7 @@ namespace EDeals.Catalog.API.Controllers
 
         [Produces("application/json")]
         [HttpGet("all")]
-        public async Task<ActionResult<PagedResult<CategoryResponse>>> GetCategories() =>
+        public async Task<ActionResult<List<CategoryResponse>>> GetCategories() =>
             ControllerExtension.Map(await _categoryService.GetCategories());
 
         [Produces("application/json")]

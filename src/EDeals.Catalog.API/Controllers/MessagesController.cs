@@ -18,5 +18,9 @@ namespace EDeals.Catalog.API.Controllers
         [HttpGet("{channelId}")]
         public async Task<ActionResult<List<MessagesResponse>>> GetMessages(string channelId) =>
              Ok(await _service.GetMessage(channelId));
+        
+        [HttpGet("conversations")]
+        public async Task<ActionResult<List<ConversationResponse>>> GetConversations() =>
+             Ok(await _service.GetMyConversations());
     }
 }

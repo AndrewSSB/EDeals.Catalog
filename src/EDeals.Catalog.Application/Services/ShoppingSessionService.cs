@@ -14,17 +14,45 @@ namespace EDeals.Catalog.Application.Services
     public class ShoppingSessionService : Result, IShoppingSessionService
     {
         private readonly IGenericRepository<ShoppingSession> _shoppingRepository;
+        private readonly IGenericRepository<Discount> _discountRepository;
         private readonly ICustomExecutionContext _executionContext;
 
-        public ShoppingSessionService(IGenericRepository<ShoppingSession> shoppingRepository, ICustomExecutionContext executionContext)
+        public ShoppingSessionService(IGenericRepository<ShoppingSession> shoppingRepository, ICustomExecutionContext executionContext, IGenericRepository<Discount> discountRepository)
         {
             _shoppingRepository = shoppingRepository;
             _executionContext = executionContext;
+            _discountRepository = discountRepository;
         }
 
         public Task<ResultResponse> AddShoppingSession(AddShoppingSessionModel model)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<ResultResponse> ApplyDiscountToShoppingSession(ApplyShoppingDiscount model)
+        {
+            var shoppingSession = await _shoppingRepository
+                .ListAllAsQueryable()
+                .Where(x => x.Id == model.Id || x.UserId == _executionContext.UserId)
+                .FirstOrDefaultAsync();
+
+            if (shoppingSession == null)
+            {
+                return BadRequest<ShoppingSessionResponse>(new ResponseError(ErrorCodes.InternalServer, ResponseErrorSeverity.Error, "Shopping session does not exists"));
+            }
+
+            var discount = await _discountRepository.ListAllAsQueryable().Where(x => x.DiscountCode == model.DiscountCode).FirstOrDefaultAsync();
+
+            if (discount is null)
+            {
+                return BadRequest<ShoppingSessionResponse>(new ResponseError(ErrorCodes.InternalServer, ResponseErrorSeverity.Error, "Discount code does not exists"));
+            }
+
+            shoppingSession.DiscountId = discount.Id;
+
+            await _shoppingRepository.UpdateAsync(shoppingSession);
+
+            return Ok();
         }
 
         public async Task<ResultResponse> DeleteShoppingSession(int id)
@@ -54,6 +82,8 @@ namespace EDeals.Catalog.Application.Services
                 return BadRequest<ShoppingSessionResponse>(new ResponseError(ErrorCodes.InternalServer, ResponseErrorSeverity.Error, "Shopping session does not exists"));
             }
 
+            var discount = await _discountRepository.GetByIdAsync(shoppingSession.DiscountId);
+
             return Ok(new ShoppingSessionResponse
             {
                 ShoppingSessionId = shoppingSession.Id,
@@ -69,7 +99,10 @@ namespace EDeals.Catalog.Application.Services
                     Image = x.Product.Images.Select(x => x.ImageUrl).FirstOrDefault(),
                     Description = x.Product.ShortDescription
 
-                }).ToList()
+                }).ToList(),
+                DiscountPercent = discount?.DiscountPercent,
+                TotalWithDiscount = shoppingSession.Total - shoppingSession.Total * (discount?.DiscountPercent / 100 ?? 0),
+                TransportPrice = 33.99M
             });
         }
 

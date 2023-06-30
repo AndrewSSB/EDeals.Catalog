@@ -1,5 +1,6 @@
 ﻿using EDeals.Catalog.Application.Interfaces;
 using Microsoft.AspNetCore.SignalR;
+using System.Threading.Channels;
 
 namespace EDeals.Catalog.Application.Services
 {
@@ -10,6 +11,11 @@ namespace EDeals.Catalog.Application.Services
         public ChatHub(IMessageService messageService)
         {
             _messageService = messageService;
+        }
+
+        public async Task JoinNotificationChannel()
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, "generic");
         }
 
         public async Task JoinChannel(string channelId)
@@ -26,13 +32,14 @@ namespace EDeals.Catalog.Application.Services
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, existingConnection ?? channelId);
         }
 
-        public async Task SendMessage(string channelId, string name, string message)
+        public async Task SendMessage(string channelId, string sender, string receiver, string message)
         {
             var existingConnection = await DoesChannelExist(channelId);
 
-            await Clients.Group(existingConnection ?? channelId).ReceiveMessage(name, message, DateTime.UtcNow);
+            await Clients.Group(existingConnection ?? channelId).ReceiveMessage(sender, receiver, message, DateTime.UtcNow);
+            await Clients.Group("generic").ReceiveNotification(sender, receiver, "message");
 
-            await _messageService.CreateMessage(name, existingConnection ?? channelId, message);
+            await _messageService.CreateMessage(sender, receiver, existingConnection ?? channelId, message);
         }
 
         private async Task<string?> DoesChannelExist(string channelId)

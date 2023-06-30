@@ -135,12 +135,21 @@ namespace EDeals.Catalog.Application.Services
                     .Include(x => x.Brand)
                     .Include(x => x.Seller)
                     .Include(x => x.Images)
+                    .Include(x => x.ProductReviews)
+                        .ThenInclude(x => x.UserInfo)
                 .Select(ProductResponse.Projection());
             
             if (!string.IsNullOrEmpty(filters.ProductName))
             {
                 productsQueryable = productsQueryable.Where(x => x.ShortDescription!.Contains(filters.ProductName) ||
                                                             x.Title!.Contains(filters.ProductName));
+            }
+
+            if (filters.ProductCategoryId.HasValue)
+            {
+
+                productsQueryable = productsQueryable.Where(x => x.Categories.CategoryId == filters.ProductCategoryId ||
+                                                            x.Categories.ParentCategoryId == filters.ProductCategoryId);
             }
 
             return Ok(await productsQueryable.MapToPagedResultAsync(filters));

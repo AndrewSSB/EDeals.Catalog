@@ -6,8 +6,9 @@ namespace EDeals.Catalog.Application.Interfaces
 {
     public interface IMessageService
     {
-        Task CreateMessage(string sender, string channelId, string message);
+        Task CreateMessage(string sender, string receiver, string channelId, string message);
         Task<List<MessagesResponse>> GetMessage(string channelId);
         Task<Messages?> CheckForChannel(Expression<Func<Messages, bool>> action);
+        Task<List<ConversationResponse>> GetMyConversations();
     }
 }

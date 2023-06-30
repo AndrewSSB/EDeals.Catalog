@@ -9,7 +9,7 @@ namespace EDeals.Catalog.Application.Interfaces
     public interface IDiscountService
     {
         Task<ResultResponse> AddDiscount(AddDiscountModel model);
-        Task<ResultResponse<DiscountResponse>> GetDiscount(int id);
+        Task<ResultResponse<DiscountResponse>> GetDiscount(string discountCode);
         Task<ResultResponse<PagedResult<DiscountResponse>>> GetDiscounts(DiscountsFilters filters);
         Task<ResultResponse> UpdateDiscount(UpdateDiscountModel model);
         Task<ResultResponse> DeleteDiscount(int id);

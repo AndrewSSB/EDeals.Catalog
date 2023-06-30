@@ -27,9 +27,9 @@ namespace EDeals.Catalog.Application.Services
         {
             var paymentIntentService = new PaymentIntentService();
 
-            var amount = await CalculateAmount(model.ShoppingSessionId);
+            var amount = model.ShoppingSessionId.HasValue ? await CalculateAmount(model.ShoppingSessionId.Value) : (long)model.Amount * 100;
 
-            if (amount == null)
+            if (amount is null or 0)
             {
                 return BadRequest<CreatePaymentResponse>(new ResponseError(ErrorCodes.InternalServer, ResponseErrorSeverity.Error, "Invalid shopping session"));
             }
