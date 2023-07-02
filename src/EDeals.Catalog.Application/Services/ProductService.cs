@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EDeals.Catalog.Application.Interfaces;
+using EDeals.Catalog.Application.Models.CategoryModels;
 using EDeals.Catalog.Application.Models.ProductModels;
 using EDeals.Catalog.Application.Pagination.Filters;
 using EDeals.Catalog.Application.Pagination.Helpers;
@@ -147,11 +148,20 @@ namespace EDeals.Catalog.Application.Services
 
             if (filters.ProductCategoryId.HasValue)
             {
-                //var categories = await _categoryRepository.ListAllAsQueryable().Select().ToListAsync();
-
                 productsQueryable = productsQueryable.Where(x => x.Categories.CategoryId == filters.ProductCategoryId ||
-                                                            x.Categories.ParentCategoryId == filters.ProductCategoryId);
+                                                                 x.Categories.ParentCategoryId == filters.ProductCategoryId);
             }
+
+
+            if (filters.OrderByPrice.HasValue)
+            {
+                productsQueryable = filters.OrderByPrice.Value ? productsQueryable.OrderBy(x => x.Price) : productsQueryable.OrderByDescending(x => x.Price);
+            }
+            
+            //if (filters.OrderByRating.HasValue)
+            //{
+            //    productsQueryable = filters.OrderByRating.Value ? productsQueryable.OrderBy(x => x.Reviews) : productsQueryable.OrderByDescending(x => x.Price));
+            //}
 
             return Ok(await productsQueryable.MapToPagedResultAsync(filters));
         }
