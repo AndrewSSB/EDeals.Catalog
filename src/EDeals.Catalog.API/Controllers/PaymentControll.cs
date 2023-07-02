@@ -1,7 +1,9 @@
 ﻿using EDeals.Catalog.API.Extensions;
 using EDeals.Catalog.Application.Interfaces;
 using EDeals.Catalog.Application.Models;
+using EDeals.Catalog.Infrastructure.Settings;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Stripe;
 
 namespace EDeals.Catalog.API.Controllers
@@ -11,12 +13,14 @@ namespace EDeals.Catalog.API.Controllers
     public class PaymentControll : Controller
     {
         private readonly IStripeService _stripeService;
+        private readonly StripeSettings _stripeSettings;
 
-        public PaymentControll(IStripeService stripeService)
+        public PaymentControll(IStripeService stripeService, IOptions<StripeSettings> stripeSettings)
         {
             _stripeService = stripeService;
+            _stripeSettings = stripeSettings.Value;
         }
-        
+
         [Produces("application/json")]
         [HttpPost]
         public async Task<ActionResult<CreatePaymentResponse>> CreatePayment(CreatePaymentModel model) =>
@@ -26,14 +30,14 @@ namespace EDeals.Catalog.API.Controllers
         public async Task<IActionResult> Index()
         {
             var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
-            const string endpointSecret = "whsec_27407608e6ce2c1bade9fb8a2ab3ffb11770a7e5176ab3a2acc3472a9ea4c1bc";
+            
             try
             {
                 var stripeEvent = EventUtility.ParseEvent(json);
                 var signatureHeader = Request.Headers["Stripe-Signature"];
 
                 stripeEvent = EventUtility.ConstructEvent(json,
-                        signatureHeader, endpointSecret);
+                        signatureHeader, _stripeSettings.WebHookSecret);
 
                 return ControllerExtension.Map(await _stripeService.UpdateOrderPaymentStatus(stripeEvent));
             }
