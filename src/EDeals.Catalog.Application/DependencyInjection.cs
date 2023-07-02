@@ -39,6 +39,7 @@ namespace EDeals.Catalog.Application
         {
             services.Configure<AzureSettings>(configuration.GetSection(nameof(AzureSettings)));
             services.Configure<SmtpSettings>(configuration.GetSection(nameof(SmtpSettings)));
+            services.Configure<ApplicationSettings>(configuration.GetSection(nameof(ApplicationSettings)));
 
             return services;
         }
