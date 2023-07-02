@@ -148,8 +148,9 @@ namespace EDeals.Catalog.Application.Services
 
             if (filters.ProductCategoryId.HasValue)
             {
-                productsQueryable = productsQueryable.Where(x => x.Categories.CategoryId == filters.ProductCategoryId ||
-                                                                 x.Categories.ParentCategoryId == filters.ProductCategoryId);
+
+                var categoryIds = await GetSubcategories(filters.ProductCategoryId.Value);
+                productsQueryable = productsQueryable.Where(x => categoryIds.Contains(x.Categories.CategoryId));
             }
 
 
@@ -220,6 +221,45 @@ namespace EDeals.Catalog.Application.Services
             }
 
             return Ok();
+        }
+
+        private async Task<List<int>> GetSubcategories(int categoryId)
+        {
+            var categories = await _categoryRepository
+                .ListAllAsQueryable()
+                    .Include(x => x.ParentCategory)
+                    .Include(x => x.SubCategories)
+                .Select(CategoryResponse.Categories())
+                .ToListAsync();
+
+            var categoryDictionary = categories.ToDictionary(x => x.CategoryId);
+            foreach (var category in categories)
+            {
+                if (category.ParentCategoryId.HasValue &&
+                    categoryDictionary.TryGetValue(category.ParentCategoryId.Value, out var parentCategory))
+                {
+                    parentCategory.SubCategories ??= new List<CategoryResponse>();
+                    parentCategory.SubCategories.Add(category);
+                }
+            }
+
+            var topLevelCategories = categories.Where(x => x.CategoryId == categoryId).ToList();
+
+            return FlattenNestedList(topLevelCategories);
+        }
+
+        public static List<int> FlattenNestedList(List<CategoryResponse> nestedList)
+        {
+            var flattenedList = new List<int>();
+            foreach (var item in nestedList)
+            {
+                flattenedList.Add(item.CategoryId);
+                if (item.SubCategories != null)
+                {
+                    flattenedList.AddRange(FlattenNestedList(item.SubCategories));
+                }
+            }
+            return flattenedList;
         }
     }
 }
