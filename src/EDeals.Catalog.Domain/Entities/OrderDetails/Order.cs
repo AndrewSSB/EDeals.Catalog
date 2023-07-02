@@ -9,7 +9,9 @@ namespace EDeals.Catalog.Domain.Entities.TransactionDetails
         public decimal Total { get; set; }
         public decimal TransportPrice { get; set; }
         public PaymentTypes PaymentType { get; set; }
+        public PaymentStatus PaymentStatus { get; set; }
         public bool IsDraft { get; set; }
+        public string? PaymentIntentId { get; set; }
 
         public string Country { get; set; }
         public string City { get; set; }

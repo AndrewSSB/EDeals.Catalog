@@ -8,5 +8,6 @@ namespace EDeals.Catalog.Application.Interfaces
         Task AddUserInfo(AddUserInfoModel model);
         Task<ResultResponse> SaveAddress(SaveUserAddress model);
         Task<ResultResponse<List<UserAddressesResponse>>> GetUserAddresses();
+        Task Update(UpdateUserModel model);
     }
 }

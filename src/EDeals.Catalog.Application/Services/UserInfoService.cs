@@ -34,6 +34,43 @@ namespace EDeals.Catalog.Application.Services
                 UserId = _customExecutionContext.UserId
             });
         }
+        
+        public async Task Update(UpdateUserModel model)
+        {
+            var userInfo = await _userInfo.ListAllAsQueryable().Where(x => x.UserId == _customExecutionContext.UserId).FirstOrDefaultAsync();
+
+            if (userInfo is null)
+            {
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(model.FirstName))
+            {
+                userInfo.FirstName = model.FirstName;
+            }
+
+            if (!string.IsNullOrEmpty(model.LastName))
+            {
+                userInfo.LastName = model.LastName;
+            }
+
+            if (!string.IsNullOrEmpty(model.Email))
+            {
+                userInfo.Email = model.Email;
+            }
+
+            if (!string.IsNullOrEmpty(model.PhoneNumber))
+            {
+                userInfo.PhoneNumber = model.PhoneNumber;
+            }
+
+            if (!string.IsNullOrEmpty(model.Username))
+            {
+                userInfo.UserName = model.Username;
+            }
+           
+            await _userInfo.UpdateAsync(userInfo);
+        }
 
         public async Task<ResultResponse> SaveAddress(SaveUserAddress model)
         {

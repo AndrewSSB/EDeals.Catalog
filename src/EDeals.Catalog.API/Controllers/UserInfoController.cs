@@ -24,6 +24,14 @@ namespace EDeals.Catalog.API.Controllers
             return Ok();
         }
         
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser(UpdateUserModel model)
+        {
+            await _userInfoService.Update(model);
+
+            return Ok();
+        }
+        
         [HttpGet]
         public async Task<ActionResult<List<UserAddressesResponse>>> Get() =>
             ControllerExtension.Map(await _userInfoService.GetUserAddresses());

@@ -2,7 +2,8 @@
 {
     public class CreatePaymentModel
     {
-        public int? ShoppingSessionId { get; set; }
+        public int OrderId { get;set; }
         public decimal Amount { get; set; }
+        public int? ShoppingSessionId { get; set; }
     }
 }

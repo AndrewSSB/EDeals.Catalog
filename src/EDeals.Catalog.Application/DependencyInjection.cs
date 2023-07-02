@@ -1,6 +1,8 @@
 ﻿using EDeals.Catalog.Application.Interfaces;
+using EDeals.Catalog.Application.Interfaces.Email;
 using EDeals.Catalog.Application.Mappings;
 using EDeals.Catalog.Application.Services;
+using EDeals.Catalog.Application.Services.EmailServices;
 using EDeals.Catalog.Application.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,6 +27,8 @@ namespace EDeals.Catalog.Application
             services.AddTransient<IProductReviewService, ProductReviewService>();
             services.AddTransient<IUserInfoService, UserInfoService>();
             services.AddTransient<IOrderService, OrderService>();
+            services.AddTransient<IBaseEmailService, BaseEmailService>();
+            services.AddTransient<IEmailService, EmailService>();
 
             services.AddMappings();
 
@@ -34,6 +38,7 @@ namespace EDeals.Catalog.Application
         public static IServiceCollection AddApplicationConfigureSettings(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<AzureSettings>(configuration.GetSection(nameof(AzureSettings)));
+            services.Configure<SmtpSettings>(configuration.GetSection(nameof(SmtpSettings)));
 
             return services;
         }
