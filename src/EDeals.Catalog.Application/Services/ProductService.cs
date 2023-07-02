@@ -147,6 +147,7 @@ namespace EDeals.Catalog.Application.Services
 
             if (filters.ProductCategoryId.HasValue)
             {
+                //var categories = await _categoryRepository.ListAllAsQueryable().Select().ToListAsync();
 
                 productsQueryable = productsQueryable.Where(x => x.Categories.CategoryId == filters.ProductCategoryId ||
                                                             x.Categories.ParentCategoryId == filters.ProductCategoryId);
